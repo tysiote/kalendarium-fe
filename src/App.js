@@ -1,25 +1,35 @@
-import logo from './logo.svg';
-import './App.css';
+import { TButton } from './components/button/t-button'
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
+import { LocalizationProvider, StaticDatePicker } from '@mui/x-date-pickers'
+import { skSK } from './skSK'
+import bgLocale from 'date-fns/locale/bg'
+// import skLocale from 'moment/locale/sk'
 
 function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+        <TButton
+          onClick={() => {
+            console.log('clicked')
+          }}
+          id="test-button">
+          Click me
+        </TButton>
+        <LocalizationProvider
+          dateAdapter={AdapterDayjs}
+          adapterLocale={bgLocale}
+          localeText={skSK.components.MuiLocalizationProvider.defaultProps.localeText}>
+          <StaticDatePicker
+            renderInput={() => <button>calendar button</button>}
+            date={new Date()}
+            onChange={(newDate) => console.log(newDate)}
+            open={true}
+          />
+        </LocalizationProvider>
       </header>
     </div>
-  );
+  )
 }
 
-export default App;
+export default App
