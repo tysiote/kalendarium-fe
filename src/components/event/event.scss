@@ -1,0 +1,40 @@
+@import 'src/constants';
+
+.event-wrapper {
+  margin: 5px 0;
+  .event-text-wrapper {
+    display: flex;
+    font-weight: bold;
+
+    .event-time {
+      margin-right: 10px;
+      color: $blue2;
+
+      &.no-time {
+        margin-right: 0;
+      }
+    }
+  }
+
+  .MuiAccordion-region {
+    background-color: $blue4;
+  }
+
+  &:hover {
+    .MuiButtonBase-root {
+      background-color: $blue2;
+    }
+
+    .MuiAccordion-region {
+      background-color: $blue3;
+    }
+
+    .event-text-wrapper {
+      color: $white2;
+
+      .event-time {
+        color: $white2;
+      }
+    }
+  }
+}

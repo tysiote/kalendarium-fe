@@ -1,0 +1,27 @@
+@import "src/constants";
+
+.event-container {
+  .event-container-headline {
+    font-size: 1.5em;
+    color: $blue1;
+    margin-bottom: 20px;
+
+    .headline-date {
+      font-weight: bold;
+    }
+
+    .headline-events-number {
+      font-style: italic;
+      font-size: 0.75em;
+      color: $grey1;
+    }
+  }
+
+  .events-controls {
+    display: block;
+
+    .events-search-bar {
+      width: 100%;
+    }
+  }
+}

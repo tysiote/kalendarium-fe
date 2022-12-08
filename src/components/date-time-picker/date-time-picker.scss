@@ -1,0 +1,245 @@
+@import "src/constants";
+
+$background-color: $white1;
+$hovered-background-color: #eee;
+$hovered-color: $blue1;
+$selected-color: $white2;
+$selected-background-color: $blue1;
+$color: $black1;
+$today-color: $blue1;
+$today-background-color: $blue1;
+$different-month-color: $grey1;
+$different-month-background-color: $white1;
+
+$default-font-size: 14px;
+$font-size2: 16px;
+$font-size3: 18px;
+
+.date-time-picker {
+  max-width: 500px;
+  min-width: 210px;
+  box-sizing: border-box;
+  box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+  font-size: $default-font-size;
+  background-color: $background-color;
+}
+
+.picker-switcher, .picker-today {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 30px;
+  border: 0;
+  background-color: $background-color;
+  transition: 0.5s;
+  font-size: $default-font-size;
+
+  span {
+    margin-left: 10px;
+  }
+
+  &:hover {
+    cursor: pointer;
+    background-color: $hovered-background-color;
+  }
+}
+
+.time-picker {
+  .date-label {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: $default-font-size;
+    font-weight: bold;
+  }
+
+  .time-selection-container {
+    width: calc(100% - 20px);
+    margin: 10px;
+    background-color: $background-color;
+    display: flex;
+
+    .time-selection-window {
+      width: calc(50% - 30px);
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+
+      &.hour-selection {
+        margin-right: 30px;
+      }
+
+      &.minute-selection {
+        margin-left: 30px;
+        .time-increment-wrapper {
+          justify-content: flex-start;
+        }
+      }
+
+      .time-increment-wrapper {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+
+        .time-increment {
+          min-width: 30px;
+          min-height: 30px;
+          background-color: $background-color;
+          transition: 0.5s;
+          border: 0;
+
+          &:hover {
+            background-color: $hovered-background-color;
+            cursor: pointer;
+          }
+        }
+
+        .time-increment-input {
+          min-height: 30px;
+          min-width: 30px;
+          text-align: center;
+          font-size: $default-font-size;
+          box-sizing: border-box;
+
+          &:active,:focus {
+            border-color: $blue1;
+          }
+        }
+      }
+    }
+  }
+
+  .no-time {
+    width: 100%;
+    border: 0;
+    background-color: $background-color;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    min-height: 30px;
+    font-size: $default-font-size;
+
+    span {
+      margin-left: 10px;
+    }
+
+    &:hover {
+      cursor: pointer;
+      background-color: $hovered-background-color;
+    }
+  }
+}
+.date-picker {
+  .calendar-days-container {
+    background-color: $background-color;
+  }
+
+  .calendar-months-row {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    background-color: $background-color;
+
+    .month-control-button {
+      min-width: 30px;
+      min-height: 30px;
+      width: calc(100%/7);
+      border: 0;
+      background-color: $background-color;
+      transition: 0.5s;
+      padding-top: 4px;
+
+      &:hover {
+        background-color: $hovered-background-color;
+        cursor: pointer;
+      }
+    }
+
+    .month-label {
+      min-width: 30px;
+      min-height: 30px;
+      width: calc((100%/7) * 3);
+      font-size: $font-size3;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: $background-color;
+    }
+  }
+
+  .calendar-weekday-names {
+    display: flex;
+    width: 100%;
+    font-size: $font-size2;
+    font-weight: bold;
+    background-color: $background-color;
+
+    div {
+      min-width: 30px;
+      min-height: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: calc(100%/7);
+    }
+  }
+
+  .calendar-week-row {
+    width: 100%;
+    display: flex;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    background-color: $background-color;
+
+    .calendar-cell {
+      font-size: 1.25em;
+      min-width: 30px;
+      width: calc((100%/7) - 10px);
+      margin: 5px 5px;
+      height: calc(100% - 10px);
+      min-height: 30px;
+      color: black;
+      background-color: white;
+      align-items: center;
+      justify-content: center;
+      display: flex;
+      border: 1px solid white;
+      border-radius: 50%;
+      box-sizing: border-box;
+      transition: 0.5s;
+
+      &.different-month {
+        color: $different-month-color;
+        //background-color: $different-month-background-color;
+        //border-color: $different-month-background-color;
+      }
+
+      &.today {
+        color: $today-color;
+        border: 1px solid $today-color;
+        font-weight: bold;
+        //background-color: $today-background-color;
+        //:first-child {
+        //  border-bottom: 1px solid $today-color;
+        //}
+      }
+
+      &.selected {
+        color: $selected-color;
+        background-color: $selected-background-color;
+        border: 1px solid $selected-background-color;
+      }
+
+      &:hover {
+        cursor: pointer;
+        background-color: $hovered-background-color;
+        color: $hovered-color;
+      }
+    }
+  }
+}

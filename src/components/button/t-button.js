@@ -4,8 +4,9 @@ import PropTypes from 'prop-types'
 import { useDispatch } from 'react-redux'
 import { pushMessage } from '../../services/redux-reducers/event-tracker/event-tracker-reducer'
 import { TIcon } from '../icon'
+import { Button } from '@mui/material'
 
-export const TButton = ({ className, style, onClick, disabled, children, icon, id }) => {
+export const TButton = ({ className, style, onClick, disabled, children, icon, id, variant }) => {
   const dispatch = useDispatch()
 
   const handleOnClick = () => {
@@ -23,13 +24,14 @@ export const TButton = ({ className, style, onClick, disabled, children, icon, i
   )
 
   return (
-    <button
+    <Button
       className={classNames('t-button', className, { disabled })}
       style={style}
       onClick={() => handleOnClick()}
-      id={id}>
+      id={id}
+      variant={variant}>
       {childrenToRender}
-    </button>
+    </Button>
   )
 }
 
@@ -40,12 +42,14 @@ TButton.propTypes = {
   className: PropTypes.string,
   style: PropTypes.object,
   disabled: PropTypes.bool,
-  icon: PropTypes.string
+  icon: PropTypes.string,
+  variant: PropTypes.string
 }
 
 TButton.defaultProps = {
   className: null,
   style: null,
   disabled: false,
-  icon: null
+  icon: null,
+  variant: 'text'
 }

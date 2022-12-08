@@ -1,0 +1,35 @@
+@import "constants";
+
+body {
+  padding: 0;
+  margin: 0;
+}
+
+.main {
+  min-height: 100vh;
+  background-color: $white2;
+  display: flex;
+  .main-content {
+    //margin-left: $main-drawer-slim-width;
+    padding: 50px;
+    transition: ease-out;
+    transition-duration: 0.25s;
+    width: calc(100% - $main-drawer-slim-width);
+
+    &.drawer-opened {
+      margin-left: $main-drawer-width;
+      width: calc(100% - $main-drawer-width);
+    }
+  }
+}
+
+@media screen and (max-width: 500px) {
+  .main {
+    .main-content {
+      &.drawer-opened {
+        width: 0;
+        display: none;
+      }
+    }
+  }
+}

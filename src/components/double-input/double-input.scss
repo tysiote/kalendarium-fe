@@ -1,0 +1,40 @@
+@import "src/constants";
+
+$inactive-border-color: $grey1;
+$active-border-color: $blue1;
+
+.double-input {
+  display: flex;
+  width: 100%;
+  box-sizing: border-box;
+  border-bottom: 1px solid $inactive-border-color;
+  transition: 0.25s;
+
+  &:hover {
+    border-bottom: 2px solid $inactive-border-color;
+  }
+
+  &.isFocused {
+    border-bottom: 3px solid $active-border-color;
+
+    label.Mui-focused {
+      color: $active-border-color;
+    }
+
+    .double-input-part {
+      label.Mui-focused {
+
+      }
+
+      .MuiOutlinedInput-root {
+        &.Mui-focused fieldset {
+          border-color: $blue1;
+        }
+      }
+    }
+  }
+
+  .double-input-part {
+    min-height: 30px;
+  }
+}
