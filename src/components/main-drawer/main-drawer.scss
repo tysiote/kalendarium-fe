@@ -7,6 +7,7 @@
   height: 100vh;
   display: flex;
   justify-content: center;
+  position: fixed;
 
   button {
     height: 50px;
@@ -23,6 +24,7 @@
   width: $main-drawer-width;
   background-color: $blue1;
   min-height: 100vh;
+  overflow-y: auto;
 
   .close-panel-button {
     color: $white1;
@@ -38,11 +40,27 @@
       margin-left: 10px;
       display: flex;
       justify-content: space-evenly;
+      font-size: 20px;
 
       span {
         //text-transform: none;
       }
     }
+
+    &:hover {
+      background-color: $blue2;
+    }
+  }
+
+  .drawer-menu-button {
+    width: 100%;
+    color: $white1;
+    font-size: 24px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 10px 20px;
+    text-transform: capitalize;
 
     &:hover {
       background-color: $blue2;

@@ -29,6 +29,7 @@ export const TButton = ({ className, style, onClick, disabled, children, icon, i
       style={style}
       onClick={() => handleOnClick()}
       id={id}
+      disabled={disabled}
       variant={variant}>
       {childrenToRender}
     </Button>

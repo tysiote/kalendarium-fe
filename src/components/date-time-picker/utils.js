@@ -1,4 +1,5 @@
 import { useStore } from 'react-redux'
+import { viewTypes } from '../../pages/views-page/constants'
 
 export const isSameMonth = (date1, date2) => {
   if (!date1 || !date2) {
@@ -150,13 +151,25 @@ export const getCurrentDateName = (value) => {
   return translateDateWithLocale(value, { weekday: 'long', day: 'numeric', month: 'long' })
 }
 
-export const getEventDateName = (value) => {
-  return translateDateWithLocale(value, {
-    weekday: 'long',
-    day: 'numeric',
-    month: 'long',
-    year: 'numeric'
-  })
+export const getEventDateName = (value, viewDates, viewType) => {
+  if (viewType === viewTypes.DAY) {
+    return translateDateWithLocale(value, {
+      weekday: 'long',
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric'
+    })
+  }
+
+  const format = { day: '2-digit', month: '2-digit', year: 'numeric' }
+  const from = translateDateWithLocale(viewDates.from, format)
+  const to = translateDateWithLocale(viewDates.to, format)
+  if (viewType === viewTypes.MONTH) {
+    const month = translateDateWithLocale(viewDates.from, { month: 'long' })
+    return `${month} (${from} - ${to})`
+  }
+
+  return `${from} - ${to}`
 }
 
 export const getCurrentWeekdayName = (value) => {
@@ -169,4 +182,19 @@ export const formatTime = (value, locale) => {
 
 export const formatDate = (value, locale) => {
   return translateDateWithLocale(value, { day: 'numeric', month: 'long' }, locale)
+}
+
+export const getHeadlineTranslation = (viewType) => {
+  switch (viewType) {
+    case viewTypes.DAY:
+      return ['events', 'eventsFromDay']
+    case viewTypes.WEEK:
+      return ['events', 'eventsFromWeek']
+    case viewTypes.MONTH:
+      return ['events', 'eventsFromMonth']
+    case viewTypes.CUSTOM:
+      return ['events', 'eventsFromCustom']
+    default:
+      return null
+  }
 }

@@ -1,0 +1,86 @@
+@import "src/constants";
+
+.views-page {
+  .views-page-container {
+    .view-options {
+      .custom-view {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+
+        .datepicker-wrapper {
+          padding: 20px;
+          max-width: 500px;
+          width: 100%;
+
+          h4 {
+            font-size: 20px;
+          }
+        }
+
+        .custom-date-values {
+          width: 100%;
+          font-size: 20px;
+        }
+      }
+    }
+    .views-selector {
+      .view-selector-button {
+        &.selected {
+          background-color: $blue1;
+          color: $white1;
+        }
+
+        &:hover {
+          background-color: $blue2;
+          color: $white1;
+        }
+      }
+    }
+
+    .view-page-buttons {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      font-size: 24px;
+      flex-wrap: wrap;
+
+      .view-button-wrapper {
+        margin-right: 10px;
+        .view-button {
+          min-width: 250px;
+          min-height: 50px;
+          padding: 0 20px;
+
+          &.apply-view-button {
+            background-color: $blue1;
+            color: $white1;
+
+            &:hover {
+              background-color: $blue2;
+            }
+          }
+
+          &.dismiss-view-button {
+            background-color: $grey2;
+            color: $black1;
+          }
+        }
+      }
+    }
+  }
+}
+
+
+@media screen and (max-width: 500px) {
+  .views-page {
+    .views-page-container {
+      .view-page-buttons {
+        .view-button-wrapper {
+          padding: 10px 0;
+          margin-right: 0;
+        }
+      }
+    }
+  }
+}

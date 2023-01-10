@@ -20,8 +20,56 @@
   .events-controls {
     display: block;
 
+    .Mui-checked {
+      .MuiSwitch-thumb  {
+        &.css-jsexje-MuiSwitch-thumb {
+          color: $blue1 !important;
+        }
+      }
+    }
+
     .events-search-bar {
       width: 100%;
+    }
+  }
+
+  .loader {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 30px;
+
+    span {
+      margin-left: 20px;
+      font-size: 20px;
+      color: $blue1;
+    }
+  }
+
+  .active-filters {
+    .active-filters-message {
+      color: $blue2;
+      font-weight: bold;
+      font-size: 1rem;
+    }
+    .active-filters-group {
+      display: flex;
+      width: 100%;
+
+      .active-filter-item-group {
+        width: 80px;
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        font-weight: bold;
+        font-size: 1rem;
+      }
+
+      .active-filter-item {
+        justify-content: flex-start;
+        color: $blue2;
+        font-size: 0.8rem;
+      }
     }
   }
 }

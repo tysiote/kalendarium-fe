@@ -1,39 +1,154 @@
 @import 'src/constants';
 
+.event-tag {
+  height: 25px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 50px;
+  margin-left: 5px;
+  font-size: 20px;
+
+  &.text {
+    background-color: $black1;
+    color: $white2;
+  }
+
+  &.video {
+    background-color: $teal1;
+    color: $white2;
+  }
+
+  &.audio {
+    background-color: $green1;
+    color: $black1;
+  }
+
+  &.live {
+    background-color: $amber1;
+    color: $black1;
+  }
+
+  &.photo {
+    background-color: $red1;
+    color: $white2;
+  }
+
+  &.editor {
+    background-color: $blue1;
+    color: $white2;
+  }
+
+  &.small {
+    display: none;
+    width: 25px;
+    min-width: 25px;
+    margin-bottom: 5px;
+  }
+
+  &.big {
+    display: flex;
+  }
+}
+
 .event-wrapper {
   margin: 5px 0;
-  .event-text-wrapper {
+  display: flex;
+
+  .event-export-control {
     display: flex;
-    font-weight: bold;
+    align-items: center;
+    justify-content: center;
 
-    .event-time {
-      margin-right: 10px;
-      color: $blue2;
-
-      &.no-time {
-        margin-right: 0;
+    .Mui-checked {
+      .MuiSvgIcon-root {
+        color: $blue1 !important;
       }
     }
   }
 
-  .MuiAccordion-region {
-    background-color: $blue4;
-  }
+  .event-accordion {
+    width: 100%;
 
-  &:hover {
-    .MuiButtonBase-root {
-      background-color: $blue2;
+    .event-summary-wrapper {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+      flex-direction: row-reverse;
+
+      .event-text-wrapper {
+        display: flex;
+        align-items: center;
+        font-weight: bold;
+
+        .event-time {
+          margin-right: 10px;
+          color: $blue2;
+
+          &.no-time {
+            margin-right: 0;
+          }
+        }
+
+        .added-today {
+          background-color: $green1;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          min-height: 25px;
+          color: $black1;
+        }
+      }
+
+      .event-tags {
+        display: flex;
+      }
+    }
+
+    &:hover {
+      .MuiButtonBase-root {
+        background-color: $blue2;
+      }
+
+      .MuiAccordion-region {
+        background-color: $blue3;
+      }
+
+      .event-text-wrapper {
+        color: $white2;
+
+        .event-time {
+          color: $white2;
+        }
+      }
     }
 
     .MuiAccordion-region {
-      background-color: $blue3;
+      background-color: $blue4;
     }
+  }
+}
 
-    .event-text-wrapper {
-      color: $white2;
+@media screen and (max-width: 500px) {
+  .event-wrapper {
+    .event-summary-wrapper {
+      flex-wrap: wrap;
+      flex-flow: wrap;
+      flex-direction: row;
 
-      .event-time {
-        color: $white2;
+      .event-tags {
+        width: 100%;
+
+        .event-tag {
+          &.small {
+            display: flex;
+          }
+
+          &.big {
+            display: none;
+          }
+        }
       }
     }
   }

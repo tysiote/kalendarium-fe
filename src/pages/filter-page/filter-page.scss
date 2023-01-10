@@ -1,0 +1,41 @@
+@import "src/constants";
+
+.filter-page {
+  h2 {
+    color: $blue1;
+  }
+
+  .filter-container {
+    display: flex;
+    justify-content: center;
+  }
+
+  .filter-page-buttons {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    font-size: 24px;
+    flex-wrap: wrap;
+
+    .filter-button {
+      min-width: 250px;
+      min-height: 50px;
+      margin: 10px 0;
+      padding: 0 20px;
+
+      &.apply-filter-button {
+        background-color: $blue1;
+        color: $white1;
+
+        &:hover {
+          background-color: $blue2;
+        }
+      }
+
+      &.dismiss-filter-button {
+        background-color: $grey2;
+        color: $black1;
+      }
+    }
+  }
+}

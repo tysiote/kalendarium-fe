@@ -57,3 +57,79 @@ export const filterEventsByKeyword = (events, keyword) => {
   }
   return events?.filter((event) => checkContent(event) || checkTitle(event))
 }
+
+const hasEventTags = (event, key, value) => {
+  if (!event[key]?.length) {
+    return false
+  }
+
+  const eventTags = event[key].includes('|') ? event[key].split('|') : [event[key]]
+
+  for (let i = 0; i < eventTags.length; i += 1) {
+    if (value.includes(eventTags[i])) {
+      return true
+    }
+  }
+
+  return false
+}
+
+export const filterEvents = (filters, events, searchValue) => {
+  let result = [...events]
+  for (const [key, value] of Object.entries(filters)) {
+    if (value.length) {
+      result = result.filter((evt) =>
+        hasEventTags(
+          evt,
+          key,
+          value.map((tag) => tag.name)
+        )
+      )
+    }
+  }
+
+  result = filterEventsByKeyword(result, searchValue)
+
+  return result
+}
+
+export const getActiveFiltersArray = (filters) => {
+  const result = []
+  for (const [key, value] of Object.entries(filters)) {
+    if (value.length) {
+      result.push([key, ...value])
+    }
+  }
+
+  return result
+}
+
+export const removeActiveFilter = (filters, filterName) => {
+  const result = {}
+  for (const [key, value] of Object.entries(filters)) {
+    result[key] = value.filter((f) => f.name !== filterName)
+  }
+
+  return result
+}
+
+export const createFlatFilters = (filters) => {
+  const result = []
+  for (const [key] of Object.entries(filters)) {
+    result.push(...filters[key].map((f) => f.name))
+  }
+
+  return result
+}
+
+export const getExportingEvents = (oldEvents, newEvent, value) => {
+  const eventList = oldEvents.filter((evt) => evt !== newEvent)
+
+  return value ? eventList.concat(newEvent) : eventList
+}
+
+export const areAllEventsExporting = (events, exportingEvents) =>
+  events?.length && events.length === exportingEvents.length
+
+export const getEventsToExportById = (events, eventsWithId) =>
+  events.filter((evt) => eventsWithId.includes(evt.id))

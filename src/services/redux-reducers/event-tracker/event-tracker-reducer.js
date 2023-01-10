@@ -8,7 +8,6 @@ export const eventTrackerReducer = createSlice({
   },
   reducers: {
     pushMessage: (state, action) => {
-      console.log('using action', state, action)
       state.messages = [...state.messages, action.payload]
     },
     archiveMessages: (state) => {

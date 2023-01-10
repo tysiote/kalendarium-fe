@@ -2,6 +2,10 @@ import { translations as pickerWithInputTranslations } from '../components/picke
 import { translations as dateTimePickerTranslations } from '../components/date-time-picker/translations'
 import { translations as mainDrawerTranslations } from '../components/main-drawer/translations'
 import { translations as eventsTranslations } from '../components/event-container/translations'
+import { translations as filterTranslations } from '../pages/filter-page/translations'
+import { translations as viewTranslations } from '../pages/views-page/translations'
+import { translations as settingsTranslations } from '../pages/settings-page/translations'
+import { translations as exportTranslations } from '../pages/export-page/translations'
 import { useStore } from 'react-redux'
 
 const mergeTranslations = (prevTranslations, nextTranslations) => ({
@@ -13,7 +17,11 @@ const setTranslations = () => {
     pickerWithInputTranslations,
     dateTimePickerTranslations,
     mainDrawerTranslations,
-    eventsTranslations
+    eventsTranslations,
+    filterTranslations,
+    viewTranslations,
+    settingsTranslations,
+    exportTranslations
   ]
   let result = {}
   translationObjects.forEach((trans) => (result = mergeTranslations(result, trans)))

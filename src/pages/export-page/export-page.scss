@@ -1,0 +1,65 @@
+@import "src/constants";
+
+.export-page {
+  .export-page-container {
+    .export-actions {
+      display: flex;
+      width: 100%;
+      justify-content: flex-end;
+
+      .export-buttons-wrapper {
+        display: flex;
+        justify-content: space-between;
+        flex-wrap: wrap;
+
+        .export-action-button {
+          width: 200px;
+          background-color: $blue1;
+          color: $white1;
+          margin-right: 20px;
+          margin-top: 20px;
+
+          &:hover {
+            background-color: $blue2;
+          }
+        }
+      }
+    }
+    .events-controls {
+      .Mui-checked {
+        .MuiSwitch-thumb  {
+          &.css-jsexje-MuiSwitch-thumb {
+            color: $blue1 !important;
+          }
+        }
+      }
+    }
+
+    .export-table {
+      .MuiTableBody-root {
+        .MuiTableRow-root {
+          &:nth-child(2n) {
+            background-color: $white2;
+          }
+        }
+
+      }
+    }
+    .export-page-buttons {
+      width: 100%;
+      display: flex;
+      flex-direction: row-reverse;
+
+      .back-button {
+        width: 200px;
+        background-color: $blue1;
+        color: $white1;
+        margin-top: 10px;
+
+        &:hover {
+          background-color: $blue2;
+        }
+      }
+    }
+  }
+}

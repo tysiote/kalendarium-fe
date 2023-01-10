@@ -21,7 +21,13 @@ import {
 import './date-time-picker.scss'
 import { translate as _ } from '../../services/translations'
 
-export const DatePicker = ({ value: initialValue, className, onChange, onModeChange }) => {
+export const DatePicker = ({
+  value: initialValue,
+  className,
+  onChange,
+  onModeChange,
+  dateFrom
+}) => {
   const [value, setValue] = useState(initialValue)
   const initialViewingValue = getFirstDayOfMonth(value || new Date())
   const [viewingValue, setViewingValue] = useState(initialViewingValue)
@@ -129,15 +135,17 @@ export const DatePicker = ({ value: initialValue, className, onChange, onModeCha
                 key={`week${idxW}`}
                 style={{ height: `${rowHeight}px` }}>
                 {week.map((day, idx) => {
+                  const dayDisabled = day.date < dateFrom
                   return (
                     <div
                       className={classNames('calendar-cell', {
                         'different-month': !day.sameMonth,
                         today: day.isToday,
-                        selected: compareDates(day.date, value)
+                        selected: compareDates(day.date, value),
+                        'not-available': dayDisabled
                       })}
                       key={`weekday-${idxW}-${idx}`}
-                      onClick={() => handleOnDateChange(day.date)}>
+                      onClick={dayDisabled ? () => {} : () => handleOnDateChange(day.date)}>
                       <span style={{ fontSize: `${fontSize}px` }}>{day.label}</span>
                     </div>
                   )
@@ -173,11 +181,13 @@ DatePicker.propTypes = {
   value: PropTypes.instanceOf(Date),
   className: PropTypes.string,
   onChange: PropTypes.func,
-  onModeChange: PropTypes.func
+  onModeChange: PropTypes.func,
+  dateFrom: PropTypes.instanceOf(Date)
 }
 
 DatePicker.defaultProps = {
   className: null,
   onChange: () => {},
-  onModeChange: null
+  onModeChange: null,
+  dateFrom: null
 }

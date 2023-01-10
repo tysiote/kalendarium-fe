@@ -240,6 +240,16 @@ $font-size3: 18px;
         background-color: $hovered-background-color;
         color: $hovered-color;
       }
+
+      &.not-available {
+        color: $different-month-color;
+
+        &:hover {
+          cursor: not-allowed;
+          background-color: $background-color;
+
+        }
+      }
     }
   }
 }

@@ -10,11 +10,11 @@ body {
   background-color: $white2;
   display: flex;
   .main-content {
-    //margin-left: $main-drawer-slim-width;
+    margin-left: $main-drawer-slim-width;
     padding: 50px;
     transition: ease-out;
     transition-duration: 0.25s;
-    width: calc(100% - $main-drawer-slim-width);
+    width: calc(100% - 2*$main-drawer-slim-width);
 
     &.drawer-opened {
       margin-left: $main-drawer-width;
