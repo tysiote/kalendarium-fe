@@ -14,7 +14,6 @@ import './filter-page.scss'
 
 export const FilterPage = ({ initialFilters, onFilterApply, onFilterClose }) => {
   const [filters, setFilters] = useState(initialFilters ?? [])
-  console.log('INITIAL FILTERS', initialFilters)
 
   const handleOnFilterApply = () => {
     onFilterApply(filters, translateFilters(filters))
@@ -25,7 +24,6 @@ export const FilterPage = ({ initialFilters, onFilterApply, onFilterClose }) => 
   }
 
   const handleOnFilterClick = (filterName) => {
-    console.log('onFilterClick', filters, filterName)
     setFilters(updateFilters(filters, filterName))
   }
 

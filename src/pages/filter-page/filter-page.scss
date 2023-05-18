@@ -33,8 +33,34 @@
       }
 
       &.dismiss-filter-button {
-        background-color: $grey2;
-        color: $black1;
+        border: 1px solid $grey1;
+        color: $blue1;
+        margin-right: 20px;
+
+        &:hover {
+          border-color: $blue2;
+        }
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .main {
+    .main-content {
+      padding: 10px;
+      width: calc(100% - (#{$main-drawer-slim-width} - 20px));
+
+      .filter-page {
+        .filter-page-buttons {
+          .filter-button {
+            width: 100%;
+
+            &.dismiss-filter-button {
+              margin-right: 0;
+            }
+          }
+        }
       }
     }
   }

@@ -7,7 +7,7 @@
   justify-content: center;
   min-width: 50px;
   margin-left: 5px;
-  font-size: 20px;
+  font-size: 16px;
 
   &.text {
     background-color: $black1;
@@ -67,6 +67,54 @@
     }
   }
 
+  .event-icons {
+    display: flex;
+
+    .event-icon {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-right: 10px;
+      padding: 5px;
+      border-radius: 35%;
+
+      &:hover {
+        color: $white1;
+        background-color: $blue2;
+        cursor: pointer;
+      }
+
+      &.restore {
+        color: $green1;
+        &:hover {
+          color: $white1;
+          background-color: $green1;
+        }
+      }
+
+      &.hard-remove {
+        color: $red1;
+
+        &:hover {
+          color: $white1;
+          background-color: $red1;
+        }
+
+        &.disabled {
+          color: $grey1;
+          background-color: inherit;
+          cursor: default;
+        }
+      }
+
+      &.disabled {
+        color: $grey1;
+        background-color: inherit;
+        cursor: default;
+      }
+    }
+  }
+
   .event-accordion {
     width: 100%;
 
@@ -98,6 +146,25 @@
           justify-content: center;
           min-height: 25px;
           color: $black1;
+          margin-left: 10px;
+          border: 1px solid $black1;
+          border-radius: 5px;
+          padding: 1px;
+          box-sizing: border-box;
+        }
+
+        .deleted-today {
+          background-color: $red1;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          min-height: 25px;
+          color: $white1;
+          margin-left: 10px;
+          border: 1px solid $black1;
+          border-radius: 5px;
+          padding: 1px;
+          box-sizing: border-box;
         }
       }
 
@@ -130,26 +197,29 @@
   }
 }
 
-@media screen and (max-width: 500px) {
+@media screen and (max-width: 600px) {
   .event-wrapper {
-    .event-summary-wrapper {
-      flex-wrap: wrap;
-      flex-flow: wrap;
-      flex-direction: row;
+    .event-accordion {
+      .event-summary-wrapper {
+        flex-wrap: wrap;
+        flex-flow: wrap;
+        flex-direction: row;
 
-      .event-tags {
-        width: 100%;
+        .event-tags {
+          width: 100%;
 
-        .event-tag {
-          &.small {
-            display: flex;
-          }
+          .event-tag {
+            &.small {
+              display: flex;
+            }
 
-          &.big {
-            display: none;
+            &.big {
+              display: none;
+            }
           }
         }
       }
     }
+
   }
 }

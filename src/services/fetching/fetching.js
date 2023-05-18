@@ -16,7 +16,6 @@ export const fetchEventsFromDay = (value, from, to) => {
   const nextDay = new Date(to ?? value)
   nextDay.setDate(nextDay.getDate() + 1)
   const val2 = translateDateIntoFetchingDate(nextDay)
-  console.log({ val1, val2, value, nextDay, from, to })
   return fetch(
     `https://kalendarium.tasr.sk/public/kal-test.php/api/events/all?from=${val1}&to=${val2}`,
     // `https://kalendarium.tasr.sk/public/index.php/api/events/all?from=${val1}&to=${val2}`,

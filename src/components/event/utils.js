@@ -27,16 +27,26 @@ export const getEventTime = (eventStartTime, noTime, withDate) => {
 export const getEditorsFromEvent = (editors) =>
   editors.includes('|') ? editors.split('|') : [editors]
 
-export const getTagsFromEvent = (tags, editors) =>
+export const getTagsFromEvent = (tags, editors, withTranslations) =>
   createObjectsFromTags(
     (editors?.length ? getEditorsFromEvent(editors) : []).concat(
       removeDuplicates(tags?.length ? (tags.includes('|') ? tags.split('|') : [tags]) : [])
-    )
+    ),
+    withTranslations
   )
 const VALID_TAGS = ['text', 'video', 'audio', 'photo', 'live']
-const createObjectsFromTags = (tags) =>
+const tagsTranslations = {
+  text: 'text',
+  video: 'video',
+  audio: 'zvuk',
+  photo: 'foto',
+  live: 'live'
+}
+const createObjectsFromTags = (tags, withTranslations) =>
   tags.map((tag) =>
-    VALID_TAGS.includes(tag) ? { variant: tag } : { variant: 'editor', title: tag }
+    VALID_TAGS.includes(tag)
+      ? { variant: withTranslations ? tagsTranslations[tag] : tag }
+      : { variant: 'editor', title: tag }
   )
 
 const removeDuplicates = (collection) => {
@@ -50,7 +60,7 @@ const removeDuplicates = (collection) => {
   return result
 }
 
-const isSameDay = (day1, day2) =>
+export const isSameDay = (day1, day2) =>
   day1.getDate() === day2.getDate() &&
   day1.getMonth() === day2.getMonth() &&
   day1.getFullYear() === day2.getFullYear()

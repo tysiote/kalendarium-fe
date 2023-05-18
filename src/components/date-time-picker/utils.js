@@ -181,7 +181,11 @@ export const formatTime = (value, locale) => {
 }
 
 export const formatDate = (value, locale) => {
-  return translateDateWithLocale(value, { day: 'numeric', month: 'long' }, locale)
+  return translateDateWithLocale(
+    value,
+    { day: '2-digit', month: '2-digit', year: 'numeric' },
+    locale
+  )
 }
 
 export const getHeadlineTranslation = (viewType) => {
@@ -197,4 +201,46 @@ export const getHeadlineTranslation = (viewType) => {
     default:
       return null
   }
+}
+
+export const checkInputDate = (isDate, value, locale) => {
+  const components = value
+    .replaceAll(' ', '')
+    .split(isDate ? '.' : ':')
+    .filter((component) => component?.length)
+  const newDate = new Date()
+
+  if (isDate) {
+    const year = components[2] ?? newDate.getFullYear()
+    newDate.setDate(parseInt(components[0]))
+    newDate.setMonth(parseInt(components[1]) - 1)
+    newDate.setFullYear(parseInt(year))
+  } else {
+    newDate.setHours(parseInt(components[0]))
+    newDate.setMinutes(parseInt(components[1]))
+  }
+
+  if (isNaN(newDate.getTime())) {
+    return null
+  }
+
+  if (isDate) {
+    return { inputValue: formatDate(newDate, locale), value: newDate }
+  }
+
+  return { inputValue: formatTime(newDate, locale), value: newDate }
+}
+
+export const mergeDateAndTime = (date, time) => {
+  if (!date || !time) {
+    return null
+  }
+  const result = new Date()
+  result.setDate(date.getDate())
+  result.setMonth(date.getMonth())
+  result.setFullYear(date.getFullYear())
+  result.setHours(time.getHours())
+  result.setMinutes(time.getMinutes())
+
+  return result
 }

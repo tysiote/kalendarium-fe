@@ -8,85 +8,129 @@ import {
   createFlatFilters,
   filterEvents,
   getActiveFiltersArray,
+  getEventById,
   getExportingEvents,
   getNextOpenedEventsState,
   getSwitchState,
   isEventOpened,
   removeActiveFilter
 } from './utils'
-import { Switch, FormControlLabel, CircularProgress } from '@mui/material'
+import { Switch, FormControlLabel, Modal, Box } from '@mui/material'
 
 import './event-container.scss'
 import { TInput } from '../input'
 import { getFilterTranslationByKeyword } from '../../pages/filter-page/utils'
 import { TButton } from '../button'
 import { viewTypes } from '../../pages/views-page/constants'
+import { ThreeDots } from 'react-loader-spinner'
+import { useStore, useDispatch, useSelector } from 'react-redux'
+import {
+  updateEditingMode,
+  updateEventModalId,
+  updateExportedEvents,
+  updateExportingMode,
+  updateOpenedEvents,
+  updateShowEditors
+} from '../../services/redux-reducers/application/application-reducer'
 
 export const EventContainer = ({
-  events,
   day,
   viewDates,
   viewType,
   loading,
   filters,
   onFilterRemove,
-  onExportingModeChange,
-  onExportingEventsChange
+  onAddEvent,
+  onEditEvent,
+  fetchTimestamp,
+  onEventRemoved,
+  onEventRestored
 }) => {
-  const [openedEvents, setOpenedEvents] = useState([])
-  const [showEditors, setShowEditors] = useState(false)
-  const [exportingMode, setExportingMode] = useState(false)
-  const [exportingEvents, setExportingEvents] = useState([])
+  const store = useStore()
+  const dispatch = useDispatch()
+
+  const userLevel = store.getState().userSettings.level
+  const events = useSelector((state) => state.application.events)
+  const editingMode = useSelector((state) => state.application.editingMode)
+  const exportingMode = useSelector((state) => state.application.exportingMode)
+  const showEditors = useSelector((state) => state.application.showEditors)
+  const exportedEvents = useSelector((state) => state.application.exportedEvents)
+  const openedEvents = useSelector((state) => state.application.openedEvents)
+  const eventModalId = useSelector((state) => state.application.eventModalId)
+
   const [allEventsChecked, setAllEventsChecked] = useState(false)
   const [searchValue, setSearchValue] = useState('')
   const [filteredEvents, setFilteredEvents] = useState(
     loading ? [] : filterEvents(filters, events, searchValue)
   )
 
+  const exportAllEventsLabel = _(['events', 'exportAllEvents'])
+  const showEditorsLabel = _(['events', 'showEditors'])
+  const editModeLabel = _(['events', 'editMode'])
+  const addEventLabel = _(['events', 'addEventLabel'])
+  const modalLabel = _(['events', 'modalLabel'])
+  const modalDeleteLabel = _(['events', 'modalDeleteLabel'])
+  const modalCancelLabel = _(['events', 'modalCancelLabel'])
+
   useEffect(() => {
-    setOpenedEvents([])
-    setAllEventsChecked(false)
     setSearchValue('')
     setFilteredEvents(loading ? [] : filterEvents(filters, events, searchValue))
-    setExportingEvents([])
-  }, [events, filters])
+  }, [
+    events,
+    filters,
+    fetchTimestamp,
+    editingMode,
+    exportingMode,
+    showEditors,
+    exportedEvents,
+    openedEvents
+  ])
+
+  const handleEditModeClick = () => {
+    dispatch(updateEditingMode(!editingMode))
+  }
+
+  const handleOnAddClick = () => {
+    onAddEvent()
+  }
+
+  const handleOnEditClick = (id) => {
+    onEditEvent(id)
+  }
 
   const handleOnEventClick = (eventId, newState) => {
     const newOpenedItems = newState
       ? [...openedEvents, eventId]
       : openedEvents.filter((itemId) => itemId !== eventId)
 
-    setOpenedEvents(newOpenedItems)
+    dispatch(updateOpenedEvents(newOpenedItems))
     setAllEventsChecked(getSwitchState(events, newOpenedItems))
   }
 
   const handleOnEventExportClick = (eventId, checked) => {
-    const newValue = getExportingEvents(exportingEvents, eventId, checked)
-    setExportingEvents(newValue)
-    onExportingEventsChange(newValue)
+    const newValue = getExportingEvents(exportedEvents, eventId, checked)
+    dispatch(updateExportedEvents(newValue))
   }
 
   const handleOnAllEventExportClick = () => {
-    const newValue = areAllEventsExporting(events, exportingEvents)
+    const newValue = areAllEventsExporting(filteredEvents, exportedEvents)
       ? []
-      : events.map((evt) => evt.id)
-    setExportingEvents(newValue)
-    onExportingEventsChange(newValue)
+      : filteredEvents.map((evt) => evt.id)
+    dispatch(updateExportedEvents(newValue))
   }
 
   const handleOnExportSwitchClick = () => {
     const newValue = !exportingMode
-    setExportingMode(newValue)
-    onExportingModeChange(newValue)
+    dispatch(updateExportingMode(newValue))
   }
 
   const handleShowEditorsClick = () => {
-    setShowEditors(!showEditors)
+    dispatch(updateShowEditors(!showEditors))
   }
 
   const handleOnOpenAllClick = () => {
     const nextOpenedItems = getNextOpenedEventsState(events, openedEvents)
-    setOpenedEvents(nextOpenedItems)
+    dispatch(updateOpenedEvents(nextOpenedItems))
     setAllEventsChecked(getSwitchState(events, nextOpenedItems))
   }
 
@@ -101,8 +145,29 @@ export const EventContainer = ({
     onFilterRemove(newFlatFilters, newFilters)
   }
 
+  const handleOnModalClose = () => {
+    dispatch(updateEventModalId(null))
+  }
+
+  const handleOnModalDelete = () => {
+    const URL = 'https://kalendarium.tasr.sk/public/index.php/api/events/delete'
+
+    fetch(URL, {
+      method: 'POST',
+      credentials: 'include',
+      body: JSON.stringify({ id: eventModalId, delete_method: 'hard' }),
+      mode: 'cors',
+      headers: { 'content-type': 'application/json; charset=UTF-8' }
+    })
+      .then((result) => result.json())
+      .then(() => {
+        onEventRemoved(eventModalId, 2)
+        dispatch(updateEventModalId(null))
+      })
+  }
+
   const renderHeadline = () => {
-    const eventsCount = events?.length ?? 0
+    const eventsCount = filteredEvents?.length ?? 0
 
     return (
       <div className="event-container-headline">
@@ -119,8 +184,7 @@ export const EventContainer = ({
   const renderLoading = () => {
     return (
       <div className="loader">
-        <CircularProgress />
-        <span>{`${_(['events', 'loading'])} ...`}</span>
+        <ThreeDots height={150} width={150} color="#202c8a" />
       </div>
     )
   }
@@ -149,28 +213,51 @@ export const EventContainer = ({
             }
             label={`${_(['events', 'openAllEvents'])}`}
           />
-          <FormControlLabel
-            control={
-              <Switch
-                onChange={() => handleShowEditorsClick()}
-                checked={showEditors}
-                inputProps={{ 'aria-label': 'controlled' }}
-              />
-            }
-            label={`${_(['events', 'showEditors'])}`}
-          />
+          {userLevel >= 2 && (
+            <FormControlLabel
+              control={
+                <Switch
+                  onChange={() => handleShowEditorsClick()}
+                  checked={showEditors}
+                  inputProps={{ 'aria-label': 'controlled' }}
+                />
+              }
+              label={`${showEditorsLabel}`}
+            />
+          )}
+          {userLevel >= 3 && (
+            <FormControlLabel
+              control={
+                <Switch
+                  onChange={() => handleEditModeClick()}
+                  checked={editingMode}
+                  inputProps={{ 'aria-label': 'controlled' }}
+                />
+              }
+              label={`${editModeLabel}`}
+            />
+          )}
           {exportingMode && (
             <div className="event-controls-secondary">
               <FormControlLabel
                 control={
                   <Switch
                     onChange={() => handleOnAllEventExportClick()}
-                    checked={areAllEventsExporting(events, exportingEvents)}
+                    checked={areAllEventsExporting(filteredEvents, exportedEvents)}
                     inputProps={{ 'aria-label': 'controlled' }}
                   />
                 }
-                label={`${_(['events', 'exportAllEvents'])}`}
+                label={`${exportAllEventsLabel}`}
               />
+            </div>
+          )}
+          {editingMode && (
+            <div className="event-controls-secondary">
+              <div className="add-button-wrapper">
+                <TButton onClick={handleOnAddClick} id="event-container-add-event-button">
+                  {addEventLabel}
+                </TButton>
+              </div>
             </div>
           )}
           {renderActiveFilters()}
@@ -198,7 +285,11 @@ export const EventContainer = ({
               showEditors={showEditors}
               exportingMode={exportingMode}
               onExport={handleOnEventExportClick}
-              isExported={exportingEvents.includes(item.id)}
+              isExported={exportedEvents.includes(item.id)}
+              editMode={editingMode}
+              onEditClick={handleOnEditClick}
+              onRemove={onEventRemoved}
+              onRestore={onEventRestored}
             />
           )
         })}
@@ -248,11 +339,41 @@ export const EventContainer = ({
     )
   }
 
+  const renderEventModal = () => {
+    return (
+      <Modal
+        open={eventModalId !== null}
+        onClose={handleOnModalClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description">
+        <Box>
+          <h2 id="modal-title">{`${modalLabel}?`}</h2>
+          <p>{getEventById(events, eventModalId)?.title}</p>
+          <div className="modal-buttons">
+            <TButton
+              onClick={handleOnModalClose}
+              id="modal-cancel-button"
+              className="modal-cancel-button">
+              {modalCancelLabel}
+            </TButton>
+            <TButton
+              onClick={handleOnModalDelete}
+              id="modal-delete-button"
+              className="modal-delete-button">
+              {modalDeleteLabel}
+            </TButton>
+          </div>
+        </Box>
+      </Modal>
+    )
+  }
+
   return (
     <div className="event-container">
       {renderHeadline()}
       {renderControls()}
       {/*{renderLoading()}*/}
+      {renderEventModal()}
       {loading ? renderLoading() : renderEvents()}
     </div>
   )
@@ -262,10 +383,13 @@ EventContainer.propTypes = {
   events: PropTypes.array,
   day: PropTypes.instanceOf(Date).isRequired,
   onFilterRemove: PropTypes.func.isRequired,
-  onExportingModeChange: PropTypes.func.isRequired,
-  onExportingEventsChange: PropTypes.func.isRequired,
   viewType: PropTypes.oneOf([viewTypes.WEEK, viewTypes.CUSTOM, viewTypes.DAY, viewTypes.MONTH])
     .isRequired,
+  onAddEvent: PropTypes.func.isRequired,
+  onEditEvent: PropTypes.func.isRequired,
+  fetchTimestamp: PropTypes.number.isRequired,
+  onEventRemoved: PropTypes.func.isRequired,
+  onEventRestored: PropTypes.func.isRequired,
   viewDates: PropTypes.object,
   loading: PropTypes.bool,
   filters: PropTypes.object

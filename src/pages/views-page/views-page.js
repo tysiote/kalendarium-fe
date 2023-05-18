@@ -15,7 +15,14 @@ import { TButton } from '../../components/button'
 
 import './views.scss'
 import classNames from 'classnames'
-import { formatDate, formatMonth, getFromTo, getMonths, getWeeks } from './utils'
+import {
+  formatDate,
+  formatMonth,
+  getDynamicViewLabels,
+  getFromTo,
+  getMonths,
+  getWeeks
+} from './utils'
 import { DatePicker } from '../../components/date-time-picker'
 
 const { CUSTOM, DAY, MONTH, WEEK } = viewTypes
@@ -26,6 +33,13 @@ export const ViewsPage = ({ initialView, initialFrom, initialTo, onViewApply, on
   const [to, setTo] = useState(initialTo ?? new Date())
   const [week, setWeek] = useState(0)
   const [month, setMonth] = useState(0)
+
+  const weekViewLabel = _(['views', 'weekSelectLabel'])
+  const monthViewLabel = _(['views', 'monthSelectLabel'])
+  const customViewFromLabel = _(['views', 'fromLabel'])
+  const customViewToLabel = _(['views', 'toLabel'])
+  const customViewDateRangeLabel = _(['views', 'dateRange'])
+  const dynamicViewLabels = getDynamicViewLabels(_)
 
   const handleOnWeekSelect = (event) => {
     setWeek(event.target.value)
@@ -66,7 +80,7 @@ export const ViewsPage = ({ initialView, initialFrom, initialTo, onViewApply, on
 
     return (
       <div className="view week-view">
-        <InputLabel id="week-select-label">{_(['views', 'weekSelectLabel'])}</InputLabel>
+        <InputLabel id="week-select-label">{weekViewLabel}</InputLabel>
         <Select
           labelId="week-select-label"
           id="week-select"
@@ -88,7 +102,7 @@ export const ViewsPage = ({ initialView, initialFrom, initialTo, onViewApply, on
 
     return (
       <div className="view month-view">
-        <InputLabel id="month-select-label">{_(['views', 'monthSelectLabel'])}</InputLabel>
+        <InputLabel id="month-select-label">{monthViewLabel}</InputLabel>
         <Select
           labelId="month-select-label"
           id="month-select"
@@ -110,15 +124,15 @@ export const ViewsPage = ({ initialView, initialFrom, initialTo, onViewApply, on
     return (
       <div className="view custom-view">
         <div className="datepicker-wrapper">
-          <h4>{_(['views', 'fromLabel'])}</h4>
+          <h4>{customViewFromLabel}</h4>
           <DatePicker onChange={handleOnDateFromChange} value={from} />
         </div>
         <div className="datepicker-wrapper">
-          <h4>{_(['views', 'toLabel'])}</h4>
+          <h4>{customViewToLabel}</h4>
           <DatePicker onChange={handleOnDateToChange} value={to} dateFrom={from} />
         </div>
         <div className="custom-date-values">
-          <h4>{`${_(['views', 'dateRange'])}: ${formatDate(from, dateFormat)} - ${formatDate(
+          <h4>{`${customViewDateRangeLabel}: ${formatDate(from, dateFormat)} - ${formatDate(
             to,
             dateFormat
           )}`}</h4>
@@ -152,9 +166,7 @@ export const ViewsPage = ({ initialView, initialFrom, initialTo, onViewApply, on
                 key={`view-type-key-${view}`}
                 selected={viewType === view}
                 onClick={() => handleOnViewSelected(view)}>
-                <ListItemText
-                  primary={_(['views', `view${view[0].toUpperCase()}${view.slice(1)}`])}
-                />
+                <ListItemText primary={dynamicViewLabels[view]} />
               </ListItemButton>
             ))}
           </List>

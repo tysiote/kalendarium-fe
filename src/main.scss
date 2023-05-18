@@ -14,16 +14,16 @@ body {
     padding: 50px;
     transition: ease-out;
     transition-duration: 0.25s;
-    width: calc(100% - 2*$main-drawer-slim-width);
+    width: calc(100% - (#{$main-drawer-slim-width} - 100px));
 
     &.drawer-opened {
       margin-left: $main-drawer-width;
-      width: calc(100% - $main-drawer-width);
+      width: calc(100% - #{$main-drawer-width});
     }
   }
 }
 
-@media screen and (max-width: 500px) {
+@media screen and (max-width: 600px) {
   .main {
     .main-content {
       &.drawer-opened {

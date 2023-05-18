@@ -1,3 +1,5 @@
+import { isAddedToday, isSameDay } from '../event/utils'
+
 export const toggleEventOpen = (openedEvents, eventId) => {
   const result = []
   openedEvents.forEach((id) => {
@@ -13,26 +15,40 @@ export const toggleEventOpen = (openedEvents, eventId) => {
   return result
 }
 
-export const getEventById = (events, id) => events.filter((e) => e.id === id)
+export const getEventById = (events, id) => events.filter((e) => e.id === id)[0]
 
 export const isEventOpened = (openedEvents, eventId) =>
   openedEvents.filter((id) => id === eventId)?.length > 0
 
-const eventTimeSortFunction = (a, b) => {
-  if (a['start_time'] < b['start_time']) {
-    return -1
+const sameDayNoTimeComparison = (a, b) => {
+  if (
+    ((a['no_time'] && !b['no_time']) || (!a['no_time'] && b['no_time'])) &&
+    isSameDay(new Date(a['start_time']), new Date(b['start_time']))
+  ) {
+    return a['no_time'] ? -1 : 1
   }
 
-  if (a['start_time'] > b['start_time']) {
-    return 1
-  }
-
-  return a['id'] > b['id']
+  return null
 }
-export const sortEventsByTime = (events) => {
-  const result = [...events]
-  result.sort(eventTimeSortFunction)
 
+const eventTimeSortFunction = (a, b) => {
+  const sameDayNoTimeDiff = sameDayNoTimeComparison(a, b)
+  if (sameDayNoTimeDiff != null) {
+    return sameDayNoTimeDiff
+  }
+
+  return a['start_time'] > b['start_time'] ? 1 : -1
+}
+
+const removeDeletedEvents = (events) =>
+  events.filter(
+    (e) =>
+      !e.deleted || (isAddedToday(e.start_time, e.deleted) && isAddedToday(new Date(), e.deleted))
+  )
+
+export const sortEventsByTime = (events) => {
+  const result = removeDeletedEvents(events)
+  result.sort(eventTimeSortFunction)
   return result
 }
 
@@ -74,7 +90,7 @@ const hasEventTags = (event, key, value) => {
   return false
 }
 
-export const filterEvents = (filters, events, searchValue) => {
+export const filterEvents = (filters, events, searchValue = '') => {
   let result = [...events]
   for (const [key, value] of Object.entries(filters)) {
     if (value.length) {
@@ -129,7 +145,7 @@ export const getExportingEvents = (oldEvents, newEvent, value) => {
 }
 
 export const areAllEventsExporting = (events, exportingEvents) =>
-  events?.length && events.length === exportingEvents.length
+  events?.length > 0 && events.length === exportingEvents.length
 
 export const getEventsToExportById = (events, eventsWithId) =>
   events.filter((evt) => eventsWithId.includes(evt.id))

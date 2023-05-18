@@ -2,10 +2,16 @@ import React, { useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
 import { getEventTime, getTagsFromEvent, isAddedToday } from './utils'
 import { translate as _ } from '../../services/translations'
-import { Accordion, AccordionDetails, AccordionSummary, Checkbox } from '@mui/material'
+import { Accordion, AccordionDetails, AccordionSummary, Checkbox, Tooltip } from '@mui/material'
 import './event.scss'
 import classNames from 'classnames'
 import { EventTag } from './event-tag'
+import ModeEditIcon from '@mui/icons-material/ModeEdit'
+import DeleteIcon from '@mui/icons-material/Delete'
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever'
+import RestoreFromTrashIcon from '@mui/icons-material/RestoreFromTrash'
+import { useDispatch } from 'react-redux'
+import { updateEventModalId } from '../../services/redux-reducers/application/application-reducer'
 
 export const Event = ({
   data,
@@ -15,14 +21,34 @@ export const Event = ({
   showEditors,
   exportingMode,
   onExport,
-  isExported
+  isExported,
+  editMode,
+  onEditClick,
+  onRemove,
+  onRestore
 }) => {
   const [checked, setChecked] = useState(isExported)
-  const { start_time: startTime, content, title, id, no_time: noTime, tags2, added, editors } = data
+  const {
+    start_time: startTime,
+    content,
+    title,
+    id,
+    no_time: noTime,
+    tags2,
+    added,
+    editors,
+    deleted
+  } = data
+
+  const dispatch = useDispatch()
 
   useEffect(() => {
     setChecked(isExported)
   })
+
+  const softRemoveTooltip = _(['eventEditor', 'softRemoveTooltip'])
+  const hardRemoveTooltip = _(['eventEditor', 'hardRemoveTooltip'])
+  const restoreTooltip = _(['eventEditor', 'restoreTooltip'])
 
   const handleOnClick = (newState) => {
     onClick(id, newState)
@@ -34,12 +60,97 @@ export const Event = ({
     onExport(id, newValue)
   }
 
+  const handleOnEditClick = () => {
+    onEditClick(id)
+  }
+
+  const handleOnDelete = (removePower) => {
+    const URL = 'https://kalendarium.tasr.sk/public/index.php/api/events/delete'
+
+    fetch(URL, {
+      method: 'POST',
+      credentials: 'include',
+      body: JSON.stringify({ id, delete_method: removePower === 1 ? 'soft' : 'hard' }),
+      mode: 'cors',
+      headers: { 'content-type': 'application/json; charset=UTF-8' }
+    })
+      .then((result) => result.json())
+      .then(() => {
+        onRemove(id, removePower)
+      })
+  }
+
+  const handleOnRestoreClick = () => {
+    const URL = 'https://kalendarium.tasr.sk/public/index.php/api/events/restore'
+
+    fetch(URL, {
+      method: 'POST',
+      credentials: 'include',
+      body: JSON.stringify({ id }),
+      mode: 'cors',
+      headers: { 'content-type': 'application/json; charset=UTF-8' }
+    })
+      .then((result) => result.json())
+      .then(() => {
+        onRestore(id)
+      })
+  }
+
+  const handleOnSoftDeleteClick = () => {
+    handleOnDelete(1)
+  }
+
+  const handleOnHardDeleteClick = () => {
+    if (!deleted) {
+      dispatch(updateEventModalId(id))
+      // handleOnDelete(2)
+    }
+  }
+
   const renderTags = () => {
     const tags = getTagsFromEvent(tags2, showEditors ? editors : null)
 
     return tags.map((tag, idx) => (
       <EventTag variant={tag.variant} title={tag.title} key={`event-tag-${id}-${tag}-${idx}`} />
     ))
+  }
+
+  const renderEditMode = () => {
+    return (
+      <div className="event-icons">
+        <div className="event-icon">
+          <ModeEditIcon onClick={handleOnEditClick} id={`edit-mode-button-${id}`} />
+        </div>
+        {!deleted && (
+          <div className="event-icon">
+            <Tooltip title={softRemoveTooltip} arrow placement="top">
+              <span>
+                <DeleteIcon onClick={handleOnSoftDeleteClick} id={`soft-delete-button-${id}`} />
+              </span>
+            </Tooltip>
+          </div>
+        )}
+        {deleted && (
+          <div className="event-icon restore">
+            <Tooltip title={restoreTooltip} arrow placement="top">
+              <span>
+                <RestoreFromTrashIcon onClick={handleOnRestoreClick} id={`restore-button-${id}`} />
+              </span>
+            </Tooltip>
+          </div>
+        )}
+        <div className={`event-icon hard-remove${deleted ? ' disabled' : ''}`}>
+          <Tooltip title={deleted ? '' : hardRemoveTooltip} arrow placement="top">
+            <span>
+              <DeleteForeverIcon
+                onClick={handleOnHardDeleteClick}
+                id={`hard-delete-button-${id}`}
+              />
+            </span>
+          </Tooltip>
+        </div>
+      </div>
+    )
   }
 
   return (
@@ -52,6 +163,7 @@ export const Event = ({
             inputProps={{ 'aria-label': 'controlled' }}
           />
         )}
+        {editMode && renderEditMode()}
       </div>
       <div className="event-accordion">
         <Accordion onChange={(e, newState) => handleOnClick(newState)} expanded={isOpened}>
@@ -65,6 +177,9 @@ export const Event = ({
                 <div className="event-title">{title}</div>
                 {isAddedToday(startTime, added) && (
                   <div className="added-today">{_(['events', 'addedToday'])}</div>
+                )}
+                {deleted && isAddedToday(startTime, deleted) && (
+                  <div className="deleted-today">{_(['events', 'deletedToday'])}</div>
                 )}
               </div>
             </div>
@@ -86,5 +201,9 @@ Event.propTypes = {
   showEditors: PropTypes.bool.isRequired,
   exportingMode: PropTypes.bool.isRequired,
   onExport: PropTypes.func.isRequired,
-  isExported: PropTypes.bool.isRequired
+  isExported: PropTypes.bool.isRequired,
+  editMode: PropTypes.bool.isRequired,
+  onEditClick: PropTypes.func.isRequired,
+  onRemove: PropTypes.func.isRequired,
+  onRestore: PropTypes.func.isRequired
 }

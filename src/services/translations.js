@@ -6,6 +6,8 @@ import { translations as filterTranslations } from '../pages/filter-page/transla
 import { translations as viewTranslations } from '../pages/views-page/translations'
 import { translations as settingsTranslations } from '../pages/settings-page/translations'
 import { translations as exportTranslations } from '../pages/export-page/translations'
+import { translations as loginTranslations } from '../pages/login-page/translations'
+import { translations as eventEditorTranslations } from '../pages/event-editor-page/translations'
 import { useStore } from 'react-redux'
 
 const mergeTranslations = (prevTranslations, nextTranslations) => ({
@@ -21,7 +23,9 @@ const setTranslations = () => {
     filterTranslations,
     viewTranslations,
     settingsTranslations,
-    exportTranslations
+    exportTranslations,
+    loginTranslations,
+    eventEditorTranslations
   ]
   let result = {}
   translationObjects.forEach((trans) => (result = mergeTranslations(result, trans)))

@@ -5,6 +5,24 @@
     h2 {
       color: $blue1;
     }
+
+    .settings-section {
+      padding-left: 20px;
+
+      .logout-button {
+        width: 150px;
+        margin-top: 10px;
+        background-color: $white2;
+        border: 1px solid $grey1;
+        color: $blue1;
+
+        &:hover {
+          background-color: $blue2;
+          color: $white1;
+        }
+      }
+    }
+
     .settings-page-buttons {
       display: flex;
       width: 100%;
@@ -17,6 +35,24 @@
 
         &:hover {
           background-color: $blue2;
+        }
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .main {
+    .main-content {
+      padding: 10px;
+      width: calc(100% - (#{$main-drawer-slim-width} - 20px));
+
+      .settings-page {
+        .settings-page-buttons {
+          margin-top: 10px;
+          .back-button {
+            width: 100%;
+          }
         }
       }
     }

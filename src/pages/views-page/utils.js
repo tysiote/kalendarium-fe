@@ -93,3 +93,17 @@ export const getFromTo = (options) => {
     return { from: months[monthIndex], to: lastDayInMonth }
   }
 }
+
+export const getDynamicViewLabels = (_) => {
+  const { CUSTOM, DAY, MONTH, WEEK } = viewTypes
+  const viewsToRender = [DAY, WEEK, MONTH, CUSTOM]
+
+  return viewsToRender.reduce(
+    (result, view) => ({
+      ...result,
+      [view]: _(['views', `view${view[0].toUpperCase()}${view.slice(1)}`])
+    }),
+    {}
+  )
+  // _(['views', `view${view[0].toUpperCase()}${view.slice(1)}`])
+}

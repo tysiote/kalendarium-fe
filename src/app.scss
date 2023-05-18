@@ -1,0 +1,73 @@
+@font-face {
+  font-family: "gotham-light";   /*Can be any text*/
+  src: local("GothamLight"),
+  url("https://kalendarium.tasr.sk/v2/static/fonts/GothamLight.otf") format("truetype");
+}
+
+.App {
+  div {
+    font-family: gotham-light, sans-serif;
+
+    .MuiButtonBase-root.MuiButton-root.MuiButton-text {
+      font-family: gotham-light, sans-serif;
+    }
+
+    .MuiFormControlLabel-root {
+      .MuiTypography-root {
+        &.MuiFormControlLabel-label {
+          &.MuiTypography-body1 {
+            font-family: gotham-light, sans-serif;
+          }
+        }
+      }
+
+    }
+
+    input {
+      font-family: gotham-light, sans-serif;
+    }
+
+    .MuiFormControl-root {
+      &.t-input {
+        &.MuiTextField-root {
+          label {
+            &.MuiFormLabel-root {
+              font-family: gotham-light, sans-serif;
+            }
+          }
+
+          .MuiInputBase-root {
+            &.MuiInput-root {
+              input {
+                font-family: gotham-light, sans-serif;
+              }
+            }
+          }
+        }
+      }
+    }
+
+    .MuiList-root {
+      &.MuiList-padding {
+        .MuiButtonBase-root {
+          &.MuiListItemButton-root {
+            .MuiListItemText-root {
+              .MuiTypography-root {
+                font-family: gotham-light, sans-serif;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+
+  .loading-login-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    min-height: 100vh;
+  }
+}

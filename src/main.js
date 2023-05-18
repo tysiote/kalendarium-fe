@@ -1,7 +1,4 @@
 import React, { useState, useEffect } from 'react'
-// import { DateTimePicker } from './components/date-time-picker'
-// import { DoubleInput } from './components/double-input'
-// import { PickerWithInput } from './components/picker-with-input'
 import { MainDrawer } from './components/main-drawer/main-drawer'
 import classNames from 'classnames'
 
@@ -13,51 +10,69 @@ import { translate as _ } from './services/translations'
 import { TButton } from './components/button'
 import { EventContainer } from './components/event-container/event-container'
 import { fetchEventsFromDay } from './services/fetching/fetching'
-import { getEventsToExportById, sortEventsByTime } from './components/event-container/utils'
+import {
+  getEventById,
+  getEventsToExportById,
+  sortEventsByTime
+} from './components/event-container/utils'
 import { ExportPage, FilterPage, SettingsPage, ViewsPage } from './pages'
 import { viewTypes } from './pages/views-page/constants'
+import PropTypes from 'prop-types'
+import { useDispatch, useSelector, useStore } from 'react-redux'
+import { EventEditorPage } from './pages/event-editor-page'
+import { updateEvents } from './services/redux-reducers/application/application-reducer'
 
-export const Main = () => {
+export const Main = ({ onLogout }) => {
   const [drawerOpened, setDrawerOpened] = useState(false)
   const [selectedDate, setSelectedDate] = useState(new Date())
   const [fetching, setFetching] = useState(true)
-  const [events, setEvents] = useState(null)
+  // const [events, setEvents] = useState(null)
   const [filters, setFilters] = useState([])
   const [tagsFilters, setTagsFilters] = useState({})
   const [view, setView] = useState(viewTypes.DAY)
   const [viewDates, setViewDates] = useState(null)
   const [currentPage, setCurrentPage] = useState('events')
-  const [exportingMode, setExportingMode] = useState(false)
-  const [exportingEvents, setExportingEvents] = useState([])
-  const handleOnDrawerClose = () => {
-    setDrawerOpened(false)
+  const [editedEvent, setEditedEvent] = useState(null)
+  const [fetchTimestamp, setFetchTimestamp] = useState(new Date().getTime())
+
+  const store = useStore()
+  const dispatch = useDispatch()
+  const level = store.getState().userSettings.level
+  const exportedEvents = useSelector((state) => state.application.exportedEvents)
+  const events = useSelector((state) => state.application.events)
+
+  const adminZoneLabel = _(['mainDrawer', 'adminZone'])
+
+  const handleOnLogout = () => {
+    onLogout()
+  }
+
+  const handleOnDrawerClose = (automatic) => {
+    setDrawerOpened(automatic && window.innerWidth > 800)
   }
 
   const handleOnDrawerOpen = () => {
     setDrawerOpened(true)
   }
 
-  const handleOnExportingModeChange = (newValue) => {
-    setExportingMode(newValue)
-  }
-
-  const handleOnExportingEventsChange = (newValue) => {
-    setExportingEvents(newValue)
-  }
-
   const handleOnSelectedDateChange = (newValue) => {
     setSelectedDate(newValue)
     setView(viewTypes.DAY)
     setFetching(true)
+    setDrawerOpened(window.innerWidth > 800)
     fetchEventsFromDay(newValue).then((result) => {
       setFetching(false)
-      setEvents(sortEventsByTime(result.data))
+      // setEvents(sortEventsByTime(result.data))
+      dispatch(updateEvents(sortEventsByTime(result.data)))
+      setTimeout(() => {
+        setFetchTimestamp(new Date().getTime())
+      }, 500)
     })
   }
 
   const handleOnPageChange = (newPage) => {
     setCurrentPage(newPage)
-    handleOnDrawerClose()
+    handleOnDrawerClose(true)
   }
 
   const handleOnFiltersApply = (newFilters, newTagsFilters) => {
@@ -77,7 +92,9 @@ export const Main = () => {
     setFetching(true)
     fetchEventsFromDay(selectedDate, newViewDates.from, newViewDates.to).then((result) => {
       setFetching(false)
-      setEvents(sortEventsByTime(result.data))
+      dispatch(updateEvents(sortEventsByTime(result.data)))
+      // setEvents(sortEventsByTime(result.data))
+      setFetchTimestamp(new Date().getTime())
     })
     setCurrentPage('events')
   }
@@ -90,16 +107,50 @@ export const Main = () => {
     window.open('https://etasr.sk/login', '_blank')
   }
 
-  const handleOnHungarianClick = () => {
-    window.open('https://kalendarium.tasr.sk/madarske/', '_blank')
+  const handleOnAdminClick = () => {
+    window.open('https://kalendarium.tasr.sk/admin-zona/', '_blank')
   }
 
-  // const handleOnAdminClick = () => {
-  //   window.open('https://kalendarium.tasr.sk/admin-zona/', '_blank')
-  // }
+  const handleOnAddEventClick = () => {
+    setEditedEvent(null)
+    setCurrentPage('event-editor')
+  }
+
+  const handleOnEditEventClick = (id) => {
+    setEditedEvent(getEventById(events, id))
+    setCurrentPage('event-editor')
+  }
+
+  const handleOnEventAdded = () => {
+    setCurrentPage('events')
+    handleOnSyncClick()
+  }
+
+  const handleOnEventUpdated = () => {
+    setCurrentPage('events')
+    handleOnSyncClick()
+  }
+
+  const handleOnEventRemoved = () => {
+    setCurrentPage('events')
+    handleOnSyncClick()
+  }
+
+  const handleOnEventRestored = () => {
+    setCurrentPage('events')
+    handleOnSyncClick()
+  }
+
+  const handleOnEventEditorDismissed = () => {
+    setCurrentPage('events')
+    handleOnSyncClick()
+  }
 
   useEffect(() => {
     handleOnSelectedDateChange(selectedDate)
+    if (window.innerWidth > 800) {
+      setDrawerOpened(true)
+    }
   }, [])
 
   return (
@@ -119,7 +170,6 @@ export const Main = () => {
                 ))}
             </div>
           </TButton>
-          {/*<PickerWithInput />*/}
           <DatePicker onChange={handleOnSelectedDateChange} value={selectedDate} />
           <TButton
             onClick={() => handleOnPageChange('filters')}
@@ -136,7 +186,7 @@ export const Main = () => {
           <TButton
             onClick={() => handleOnPageChange('export')}
             id={'menu-button-export'}
-            disabled={!exportingMode || !exportingEvents?.length}
+            disabled={!exportedEvents?.length}
             className="drawer-menu-button">
             {_(['mainDrawer', 'exportEvents'])}
           </TButton>
@@ -152,18 +202,15 @@ export const Main = () => {
             className="drawer-menu-button">
             {_(['mainDrawer', 'backToTasr'])}
           </TButton>
-          <TButton
-            onClick={handleOnHungarianClick}
-            id={'menu-button-hungarian-events'}
-            className="drawer-menu-button">
-            {_(['mainDrawer', 'hungarianEvents'])}
-          </TButton>
-          {/*<TButton*/}
-          {/*  onClick={handleOnAdminClick}*/}
-          {/*  id={'menu-button-admin-zone'}*/}
-          {/*  className="drawer-menu-button">*/}
-          {/*  {_(['mainDrawer', 'adminZone'])}*/}
-          {/*</TButton>*/}
+          {level === 4 && (
+            <TButton
+              onClick={handleOnAdminClick}
+              id={'menu-button-admin-zone'}
+              className="drawer-menu-button">
+              {adminZoneLabel}
+            </TButton>
+          )}
+
           <TButton
             onClick={() => handleOnPageChange('settings')}
             id={'menu-button-settings'}
@@ -178,13 +225,15 @@ export const Main = () => {
           <EventContainer
             day={selectedDate}
             loading={fetching}
-            events={events}
             filters={tagsFilters}
             onFilterRemove={handleOnFilterRemove}
             viewType={view}
             viewDates={viewDates}
-            onExportingModeChange={handleOnExportingModeChange}
-            onExportingEventsChange={handleOnExportingEventsChange}
+            onAddEvent={handleOnAddEventClick}
+            onEditEvent={handleOnEditEventClick}
+            fetchTimestamp={fetchTimestamp}
+            onEventRemoved={handleOnEventRemoved}
+            onEventRestored={handleOnEventRestored}
           />
         )}
         {currentPage === 'filters' && (
@@ -206,12 +255,29 @@ export const Main = () => {
         {currentPage === 'export' && (
           <ExportPage
             onBack={() => handleOnPageChange('events')}
-            events={getEventsToExportById(events, exportingEvents)}
+            events={getEventsToExportById(events, exportedEvents)}
             withDate={view !== viewTypes.DAY}
+            filters={tagsFilters}
           />
         )}
-        {currentPage === 'settings' && <SettingsPage onBack={() => handleOnPageChange('events')} />}
+        {currentPage === 'settings' && (
+          <SettingsPage onBack={() => handleOnPageChange('events')} onLogout={handleOnLogout} />
+        )}
+        {currentPage === 'event-editor' && (
+          <EventEditorPage
+            onRemove={handleOnEventRemoved}
+            onAdd={handleOnEventAdded}
+            onCancel={handleOnEventEditorDismissed}
+            event={editedEvent}
+            onEdit={handleOnEventUpdated}
+            onRestore={handleOnEventRestored}
+          />
+        )}
       </div>
     </div>
   )
+}
+
+Main.propTypes = {
+  onLogout: PropTypes.func.isRequired
 }

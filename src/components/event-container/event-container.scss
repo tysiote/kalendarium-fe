@@ -31,6 +31,18 @@
     .events-search-bar {
       width: 100%;
     }
+
+    .add-button-wrapper {
+      .MuiButtonBase-root {
+        background-color: $blue1;
+        color: $white1;
+
+        &:hover {
+          background-color: $blue2;
+        }
+      }
+    }
+
   }
 
   .loader {
@@ -71,5 +83,26 @@
         font-size: 0.8rem;
       }
     }
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .main-content {
+    .event-container {
+      .events-controls {
+        label {
+          display: block;
+          padding-left: 20px;
+          width: calc(100% - 20px);
+        }
+
+        .events-search-bar {
+          label {
+            padding-left: 0;
+          }
+        }
+      }
+    }
+
   }
 }

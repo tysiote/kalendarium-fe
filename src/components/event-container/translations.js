@@ -70,6 +70,10 @@ export const translations = {
       'en-150': 'Added today',
       'sk-SK': 'Dnes pridané'
     },
+    deletedToday: {
+      'en-150': 'Event cancelled',
+      'sk-SK': 'Udalosť zrušená'
+    },
     showEditors: {
       'en-150': 'Show editors',
       'sk-SK': 'Zobraziť redaktorov'
@@ -81,6 +85,26 @@ export const translations = {
     exportAllEvents: {
       'en-150': 'Export all',
       'sk-SK': 'Exportovať všetko'
+    },
+    editMode: {
+      'en-150': 'Editor Mode',
+      'sk-SK': 'Editovať'
+    },
+    addEventLabel: {
+      'en-150': 'Create event',
+      'sk-SK': 'Vytvoriť udalosť'
+    },
+    modalLabel: {
+      'en-150': 'Are you sure you want to delete this event',
+      'sk-SK': 'Chcete naozaj zmazať túto udalosť'
+    },
+    modalDeleteLabel: {
+      'en-150': 'Delete event',
+      'sk-SK': 'Zmazať udalosť'
+    },
+    modalCancelLabel: {
+      'en-150': 'Cancel',
+      'sk-SK': 'Ponechať'
     }
   }
 }

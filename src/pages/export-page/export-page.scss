@@ -14,13 +14,13 @@
 
         .export-action-button {
           width: 200px;
-          background-color: $blue1;
-          color: $white1;
+          border: 1px solid $grey1;
+          color: $blue1;
           margin-right: 20px;
           margin-top: 20px;
 
           &:hover {
-            background-color: $blue2;
+            border-color: $blue2;
           }
         }
       }
@@ -36,14 +36,34 @@
     }
 
     .export-table {
-      .MuiTableBody-root {
-        .MuiTableRow-root {
-          &:nth-child(2n) {
-            background-color: $white2;
+      overflow-y: auto;
+      max-height: 75vh;
+
+      .MuiPaper-root {
+        table {
+          width: 100%;
+          position: relative;
+          .MuiTableHead-root {
+            z-index: 2;
+            tr {
+              th {
+                position: sticky;
+                top: 0;
+              }
+            }
+          }
+          .MuiTableBody-root {
+            .MuiTableRow-root {
+              &:nth-child(2n) {
+                background-color: $white2;
+              }
+            }
+
           }
         }
 
       }
+
     }
     .export-page-buttons {
       width: 100%;

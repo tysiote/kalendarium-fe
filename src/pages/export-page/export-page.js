@@ -17,14 +17,18 @@ import { EventToExport } from '../settings-page/event-to-export'
 import './export-page.scss'
 import { getJsonExportData, technicalExport } from './utils'
 import { useReactToPrint } from 'react-to-print'
+import { filterEvents } from '../../components/event-container/utils'
 
-export const ExportPage = ({ events, onBack, withDate }) => {
+export const ExportPage = ({ events, filters, onBack, withDate }) => {
   const [withEditors, setWithEditors] = useState(false)
   const [withDescription, setWithDescription] = useState(false)
   const componentRef = useRef()
   const handlePrint = useReactToPrint({
     content: () => componentRef.current
   })
+
+  const filteredEvents = filterEvents(filters, events)
+
   const jsonMessage = _(['export', 'jsonCopied'])
 
   const handleOnEditorSwitch = () => {
@@ -44,12 +48,12 @@ export const ExportPage = ({ events, onBack, withDate }) => {
   }
 
   const handleOnJsonClick = () => {
-    getJsonExportData(events)
+    getJsonExportData(filteredEvents)
     alert(jsonMessage)
   }
 
   const handleOnTechnicalClick = () => {
-    technicalExport(events, withDescription, withDate)
+    technicalExport(filteredEvents, withDescription, withDate)
   }
 
   return (
@@ -117,7 +121,7 @@ export const ExportPage = ({ events, onBack, withDate }) => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {events.map((evt) => (
+                {filteredEvents.map((evt) => (
                   <EventToExport
                     withEditors={withEditors}
                     data={evt}
@@ -143,5 +147,10 @@ export const ExportPage = ({ events, onBack, withDate }) => {
 ExportPage.propTypes = {
   events: PropTypes.array.isRequired,
   onBack: PropTypes.func.isRequired,
-  withDate: PropTypes.bool.isRequired
+  withDate: PropTypes.bool.isRequired,
+  filters: PropTypes.object
+}
+
+ExportPage.defaultProps = {
+  filters: {}
 }

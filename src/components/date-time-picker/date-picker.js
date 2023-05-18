@@ -1,4 +1,4 @@
-import React, { useLayoutEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
 
@@ -36,15 +36,32 @@ export const DatePicker = ({
   const [fontSize, setFontSize] = useState(0)
   const [fontSize2, setFontSize2] = useState(0)
   const [fontSize3, setFontSize3] = useState(0)
+  const [wrapperWidth, setWrapperWidth] = useState(0)
+
   const wrapperRef = useRef(null)
 
-  useLayoutEffect(() => {
-    const newWidth = wrapperRef.current.offsetWidth
-    setRowHeight(newWidth / 7)
-    setFontSize(newWidth / 21)
-    setFontSize2(newWidth / 19)
-    setFontSize3(newWidth / 17)
-  })
+  const handleResize = () => {
+    const newWidth = wrapperRef?.current?.offsetWidth
+    if (newWidth !== wrapperWidth) {
+      setWrapperWidth(newWidth)
+      setRowHeight(newWidth / 7)
+      setFontSize(newWidth / 21)
+      setFontSize2(newWidth / 19)
+      setFontSize3(newWidth / 17)
+    }
+  }
+
+  useEffect(() => {
+    handleResize()
+    setValue(initialValue)
+    setViewingValue(getFirstDayOfMonth(initialValue))
+    setMonthData(getMonthData(getFirstDayOfMonth(initialValue)))
+    window.addEventListener('resize', handleResize)
+
+    return () => {
+      window.removeEventListener('resize', handleResize)
+    }
+  }, [initialValue])
 
   const handleOnModeChange = () => {
     onModeChange()

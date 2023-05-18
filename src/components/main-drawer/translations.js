@@ -41,8 +41,8 @@ export const translations = {
       'sk-SK': 'Dáta sú aktuálne'
     },
     adminZone: {
-      'en-150': 'Administrative zone',
-      'sk-SK': 'Administratívna zóna'
+      'en-150': 'Administration',
+      'sk-SK': 'Administratíva'
     }
   }
 }

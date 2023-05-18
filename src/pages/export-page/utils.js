@@ -5,7 +5,7 @@ export const formatExportDate = (value, day, locale = 'sk-SK') => {
   const format = day ? { day: 'numeric', month: 'long' } : { hour: 'numeric', minute: '2-digit' }
   const formatter = Intl.DateTimeFormat(locale, format)
   const result = formatter.format(new Date(value))
-  return result === '0:00' ? '' : result
+  return result === '0:00' ? '' : result.replace(':', '.')
 }
 
 const getWeekDay = (value, locale = 'sk-SK') =>
@@ -89,7 +89,7 @@ const technicalExportOne = (e, limit, content, withDate) => {
     res +=
       '<br>' +
       insertTechnicalBreakes(
-        getTagsFromEvent(e.tags2)
+        getTagsFromEvent(e.tags2, undefined, true)
           .map((t) => t.variant)
           .join(', '),
         limit - 10,
