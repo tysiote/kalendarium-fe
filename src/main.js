@@ -32,6 +32,7 @@ export const Main = ({ onLogout }) => {
   const [view, setView] = useState(viewTypes.DAY)
   const [viewDates, setViewDates] = useState(null)
   const [currentPage, setCurrentPage] = useState('events')
+
   const [editedEvent, setEditedEvent] = useState(null)
   const [fetchTimestamp, setFetchTimestamp] = useState(new Date().getTime())
 

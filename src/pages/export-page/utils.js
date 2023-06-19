@@ -18,12 +18,29 @@ export const formatExportTags = (tags) =>
     )
     .join(', ')
 
+const convertDateToJsonDate = (date) => {
+  let formatter = null
+
+  formatter = new Intl.DateTimeFormat('sk-SK', {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit'
+  })
+
+  return formatter.format(date)
+}
 const copyEvent = (event) => {
+  const localTime = new Date(event.start_time)
+  const localTimeFormatted = convertDateToJsonDate(localTime)
+
   return {
     content: event.content,
     id: event.id,
     no_time: event.no_time,
-    start_time: new Date(event.start_time),
+    start_time_utc: new Date(event.start_time),
+    start_time: localTimeFormatted,
     title: event.title
   }
 }
