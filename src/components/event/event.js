@@ -24,7 +24,6 @@ export const Event = ({
   isExported,
   editMode,
   onEditClick,
-  onRemove,
   onRestore
 }) => {
   const [checked, setChecked] = useState(isExported)
@@ -64,22 +63,6 @@ export const Event = ({
     onEditClick(id)
   }
 
-  const handleOnDelete = (removePower) => {
-    const URL = 'https://kalendarium.tasr.sk/public/index.php/api/events/delete'
-
-    fetch(URL, {
-      method: 'POST',
-      credentials: 'include',
-      body: JSON.stringify({ id, delete_method: removePower === 1 ? 'soft' : 'hard' }),
-      mode: 'cors',
-      headers: { 'content-type': 'application/json; charset=UTF-8' }
-    })
-      .then((result) => result.json())
-      .then(() => {
-        onRemove(id, removePower)
-      })
-  }
-
   const handleOnRestoreClick = () => {
     const URL = 'https://kalendarium.tasr.sk/public/index.php/api/events/restore'
 
@@ -97,12 +80,15 @@ export const Event = ({
   }
 
   const handleOnSoftDeleteClick = () => {
-    handleOnDelete(1)
+    if (!deleted) {
+      dispatch(updateEventModalId({ id, deletePower: 1 }))
+      // handleOnDelete(2)
+    }
   }
 
   const handleOnHardDeleteClick = () => {
     if (!deleted) {
-      dispatch(updateEventModalId(id))
+      dispatch(updateEventModalId({ id, deletePower: 2 }))
       // handleOnDelete(2)
     }
   }

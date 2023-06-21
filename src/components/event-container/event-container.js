@@ -57,6 +57,7 @@ export const EventContainer = ({
   const exportedEvents = useSelector((state) => state.application.exportedEvents)
   const openedEvents = useSelector((state) => state.application.openedEvents)
   const eventModalId = useSelector((state) => state.application.eventModalId)
+  const deletePower = useSelector((state) => state.application.eventDeletePower)
 
   const [allEventsChecked, setAllEventsChecked] = useState(false)
   const [searchValue, setSearchValue] = useState('')
@@ -68,8 +69,10 @@ export const EventContainer = ({
   const showEditorsLabel = _(['events', 'showEditors'])
   const editModeLabel = _(['events', 'editMode'])
   const addEventLabel = _(['events', 'addEventLabel'])
-  const modalLabel = _(['events', 'modalLabel'])
-  const modalDeleteLabel = _(['events', 'modalDeleteLabel'])
+  const modalSoftLabel = _(['events', 'modalSoftLabel'])
+  const modalHardLabel = _(['events', 'modalHardLabel'])
+  const modalHardDeleteLabel = _(['events', 'modalHardDeleteLabel'])
+  const modalSoftDeleteLabel = _(['events', 'modalSoftDeleteLabel'])
   const modalCancelLabel = _(['events', 'modalCancelLabel'])
 
   useEffect(() => {
@@ -149,19 +152,20 @@ export const EventContainer = ({
     dispatch(updateEventModalId(null))
   }
 
-  const handleOnModalDelete = () => {
+  const handleOnModalDelete = (power) => {
     const URL = 'https://kalendarium.tasr.sk/public/index.php/api/events/delete'
+    const deleteMethod = deletePower === 1 ? 'soft' : 'hard'
 
     fetch(URL, {
       method: 'POST',
       credentials: 'include',
-      body: JSON.stringify({ id: eventModalId, delete_method: 'hard' }),
+      body: JSON.stringify({ id: eventModalId, delete_method: deleteMethod }),
       mode: 'cors',
       headers: { 'content-type': 'application/json; charset=UTF-8' }
     })
       .then((result) => result.json())
       .then(() => {
-        onEventRemoved(eventModalId, 2)
+        onEventRemoved(eventModalId, power)
         dispatch(updateEventModalId(null))
       })
   }
@@ -340,9 +344,11 @@ export const EventContainer = ({
   }
 
   const renderEventModal = () => {
+    const modalDeleteLabel = deletePower === 1 ? modalSoftDeleteLabel : modalHardDeleteLabel
+    const modalLabel = deletePower ? modalSoftLabel : modalHardLabel
     return (
       <Modal
-        open={eventModalId !== null}
+        open={!!eventModalId}
         onClose={handleOnModalClose}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description">
@@ -357,7 +363,7 @@ export const EventContainer = ({
               {modalCancelLabel}
             </TButton>
             <TButton
-              onClick={handleOnModalDelete}
+              onClick={() => handleOnModalDelete(deletePower)}
               id="modal-delete-button"
               className="modal-delete-button">
               {modalDeleteLabel}

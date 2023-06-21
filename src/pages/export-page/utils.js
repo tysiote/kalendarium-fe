@@ -1,11 +1,23 @@
 import { getTagsFromEvent } from '../../components/event/utils'
 import { translate as _ } from '../../services/translations'
 
-export const formatExportDate = (value, day, locale = 'sk-SK') => {
+export const formatExportDate = (value, technical = false, day = false, locale = 'sk-SK') => {
   const format = day ? { day: 'numeric', month: 'long' } : { hour: 'numeric', minute: '2-digit' }
   const formatter = Intl.DateTimeFormat(locale, format)
   const result = formatter.format(new Date(value))
-  return result === '0:00' ? '' : result.replace(':', '.')
+  const finalResult = technical ? timeToDoubleDigit(result).replace(':', '.') : result
+  return result === '0:00' ? '' : finalResult
+}
+
+const timeToDoubleDigit = (value) => {
+  let hours = value.split(':')[0]
+  const minutes = value.split(':')[1]
+
+  if (hours.length === 1) {
+    hours = `0${hours}`
+  }
+
+  return `${hours}:${minutes}`
 }
 
 const getWeekDay = (value, locale = 'sk-SK') =>
@@ -76,21 +88,21 @@ const technicalExportOne = (e, limit, content, withDate) => {
   let res = ''
 
   if (withDate) {
-    res += `${formatExportDate(e.start_time, true)} - ${getWeekDay(e.start_time)}<br><br>`
+    res += `${formatExportDate(e.start_time, true, true)} - ${getWeekDay(e.start_time)}<br><br>`
   }
 
   if (e.title.length < limit - 10) {
     if (e.no_time) {
       res += '&nbsp;'.repeat(10) + e.title
     } else {
-      res += formatExportDate(e.start_time) + '&nbsp;'.repeat(5) + e.title
+      res += formatExportDate(e.start_time, true) + '&nbsp;'.repeat(5) + e.title
     }
   } else {
     if (e.no_time) {
       res += insertTechnicalBreakes(e.title, limit - 10)
     } else {
       res +=
-        formatExportDate(e.start_time) +
+        formatExportDate(e.start_time, true) +
         '&nbsp;'.repeat(5) +
         insertTechnicalBreakes(e.title, limit - 10, false, true)
     }

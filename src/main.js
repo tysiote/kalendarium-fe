@@ -71,6 +71,16 @@ export const Main = ({ onLogout }) => {
     })
   }
 
+  const handleOnManualClick = () => {
+    const link = document.createElement('a')
+    link.download = 'manual.pdf'
+    link.href = 'https://kalendarium.tasr.sk/manual.pdf'
+    link.target = '_blank'
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+  }
+
   const handleOnPageChange = (newPage) => {
     setCurrentPage(newPage)
     handleOnDrawerClose(true)
@@ -217,6 +227,13 @@ export const Main = ({ onLogout }) => {
             id={'menu-button-settings'}
             className="drawer-menu-button">
             {_(['mainDrawer', 'settings'])}
+          </TButton>
+
+          <TButton
+            onClick={() => handleOnManualClick()}
+            id={'menu-button-manual'}
+            className="drawer-menu-button">
+            {_(['mainDrawer', 'manual'])}
           </TButton>
         </div>
       </MainDrawer>

@@ -28,6 +28,10 @@ export const translations = {
       'en-150': 'Settings',
       'sk-SK': 'Nastavenia'
     },
+    manual: {
+      'en-150': 'Manual',
+      'sk-SK': 'Manuál'
+    },
     exportEvents: {
       'en-150': 'Export events',
       'sk-SK': 'Export udalostí'

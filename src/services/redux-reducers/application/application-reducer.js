@@ -11,7 +11,8 @@ export const applicationReducer = createSlice({
     exportedEvents: [],
     events: [],
     filteredEvents: [],
-    eventModalId: null
+    eventModalId: null,
+    eventDeletePower: null
   },
   reducers: {
     updateEditingMode: (state, action) => {
@@ -36,7 +37,10 @@ export const applicationReducer = createSlice({
       state.filteredEvents = action.payload
     },
     updateEventModalId: (state, action) => {
-      state.eventModalId = action.payload
+      console.log('updating event modal', action.payload)
+      const { id, deletePower } = action.payload ?? {}
+      state.eventModalId = id
+      state.eventDeletePower = deletePower
     }
   }
 })

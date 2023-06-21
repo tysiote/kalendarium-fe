@@ -94,13 +94,21 @@ export const translations = {
       'en-150': 'Create event',
       'sk-SK': 'Vytvoriť udalosť'
     },
-    modalLabel: {
+    modalSoftLabel: {
+      'en-150': 'Are you sure you want to cancel this event',
+      'sk-SK': 'Chcete naozaj zrušiť túto udalosť'
+    },
+    modalHardLabel: {
       'en-150': 'Are you sure you want to delete this event',
       'sk-SK': 'Chcete naozaj zmazať túto udalosť'
     },
-    modalDeleteLabel: {
+    modalHardDeleteLabel: {
       'en-150': 'Delete event',
       'sk-SK': 'Zmazať udalosť'
+    },
+    modalSoftDeleteLabel: {
+      'en-150': 'Cancel event',
+      'sk-SK': 'Zrušiť udalosť'
     },
     modalCancelLabel: {
       'en-150': 'Cancel',
