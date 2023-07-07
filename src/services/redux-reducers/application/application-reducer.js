@@ -3,7 +3,7 @@ import { createSlice } from '@reduxjs/toolkit'
 export const applicationReducer = createSlice({
   name: 'applicationReducer',
   initialState: {
-    version: '3.0.1',
+    version: '3.1.2',
     editingMode: false,
     exportingMode: false,
     showEditors: false,
@@ -37,7 +37,6 @@ export const applicationReducer = createSlice({
       state.filteredEvents = action.payload
     },
     updateEventModalId: (state, action) => {
-      console.log('updating event modal', action.payload)
       const { id, deletePower } = action.payload ?? {}
       state.eventModalId = id
       state.eventDeletePower = deletePower

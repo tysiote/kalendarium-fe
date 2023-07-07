@@ -5,7 +5,8 @@ export const formatExportDate = (value, technical = false, day = false, locale =
   const format = day ? { day: 'numeric', month: 'long' } : { hour: 'numeric', minute: '2-digit' }
   const formatter = Intl.DateTimeFormat(locale, format)
   const result = formatter.format(new Date(value))
-  const finalResult = technical ? timeToDoubleDigit(result).replace(':', '.') : result
+  const finalResult = technical && !day ? timeToDoubleDigit(result).replace(':', '.') : result
+  console.log(result, finalResult)
   return result === '0:00' ? '' : finalResult
 }
 

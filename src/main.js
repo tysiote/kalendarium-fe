@@ -26,12 +26,12 @@ export const Main = ({ onLogout }) => {
   const [drawerOpened, setDrawerOpened] = useState(false)
   const [selectedDate, setSelectedDate] = useState(new Date())
   const [fetching, setFetching] = useState(true)
-  // const [events, setEvents] = useState(null)
   const [filters, setFilters] = useState([])
   const [tagsFilters, setTagsFilters] = useState({})
   const [view, setView] = useState(viewTypes.DAY)
   const [viewDates, setViewDates] = useState(null)
   const [currentPage, setCurrentPage] = useState('events')
+  const [pingCounter, setPingCounter] = useState(0)
 
   const [editedEvent, setEditedEvent] = useState(null)
   const [fetchTimestamp, setFetchTimestamp] = useState(new Date().getTime())
@@ -104,7 +104,6 @@ export const Main = ({ onLogout }) => {
     fetchEventsFromDay(selectedDate, newViewDates.from, newViewDates.to).then((result) => {
       setFetching(false)
       dispatch(updateEvents(sortEventsByTime(result.data)))
-      // setEvents(sortEventsByTime(result.data))
       setFetchTimestamp(new Date().getTime())
     })
     setCurrentPage('events')
@@ -159,8 +158,32 @@ export const Main = ({ onLogout }) => {
 
   useEffect(() => {
     handleOnSelectedDateChange(selectedDate)
+    const pingConnection = setInterval(() => {
+      const URL = 'https://kalendarium.tasr.sk/public/index.php/ping'
+      fetch(URL, {
+        mode: 'cors',
+        method: 'POST',
+        credentials: 'include',
+        body: '',
+        headers: { 'content-type': 'application/json' }
+      })
+        .then((result) => result.json())
+        .then((data) => {
+          setFetching(false)
+          if (data.status.code === 1) {
+            onLogout()
+            console.log('logging out after', `${pingCounter * 240} seconds ...`)
+          } else {
+            setPingCounter(pingCounter + 1)
+          }
+        })
+    }, 240000)
     if (window.innerWidth > 800) {
       setDrawerOpened(true)
+    }
+
+    return () => {
+      clearInterval(pingConnection)
     }
   }, [])
 

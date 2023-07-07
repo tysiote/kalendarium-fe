@@ -9,7 +9,7 @@ export const EventToExport = ({ data, withEditors, withDescription, withDate }) 
   return (
     <TableRow className="event-to-export">
       {withDate && (
-        <TableCell align="left">{formatExportDate(new Date(startTime), true)}</TableCell>
+        <TableCell align="left">{formatExportDate(new Date(startTime), false, true)}</TableCell>
       )}
       <TableCell align="left">{formatExportDate(new Date(startTime), false)}</TableCell>
       <TableCell align="left">{title}</TableCell>
