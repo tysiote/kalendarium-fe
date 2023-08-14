@@ -3,7 +3,7 @@ import { createSlice } from '@reduxjs/toolkit'
 export const applicationReducer = createSlice({
   name: 'applicationReducer',
   initialState: {
-    version: '3.1.2',
+    version: '3.1.3',
     editingMode: false,
     exportingMode: false,
     showEditors: false,

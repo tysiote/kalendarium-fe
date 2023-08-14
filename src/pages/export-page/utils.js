@@ -6,7 +6,6 @@ export const formatExportDate = (value, technical = false, day = false, locale =
   const formatter = Intl.DateTimeFormat(locale, format)
   const result = formatter.format(new Date(value))
   const finalResult = technical && !day ? timeToDoubleDigit(result).replace(':', '.') : result
-  console.log(result, finalResult)
   return result === '0:00' ? '' : finalResult
 }
 
@@ -184,3 +183,37 @@ const insertTechnicalBreakes = (s, limit, reversed, no_line_break) => {
 
   return res
 }
+
+export const copyEventsToClipboard = ({
+  events,
+  withDescription,
+  withDate,
+  withEditors,
+  tagsTranslations
+}) => {
+  const getEventStartTime = (startTime) =>
+    withDate
+      ? `${formatExportDate(new Date(startTime), false, true)} - ${formatExportDate(
+          new Date(startTime)
+        )}`
+      : `${formatExportDate(new Date(startTime))}`
+
+  const result = events.reduce(
+    (acc, evt) =>
+      acc +
+      `\n${getEventStartTime(evt.start_time)}\t${evt.title}${
+        withDescription ? `\t${evt.content.replaceAll('\n', ' ')}` : ''
+      }\t${tagsTranslations[evt.tags2] ?? ''}${withEditors ? `\t${evt.editors}` : ''}`,
+    ''
+  )
+
+  navigator.clipboard.writeText(result)
+}
+
+export const getDefaultEventsTagsTranslations = () => ({
+  text: formatExportTags('text'),
+  audio: formatExportTags('audio'),
+  photo: formatExportTags('photo'),
+  video: formatExportTags('video'),
+  live: formatExportTags('live')
+})

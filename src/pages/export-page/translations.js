@@ -20,6 +20,10 @@ export const translations = {
       'en-150': 'Technical export',
       'sk-SK': 'Technický export'
     },
+    copyEvents: {
+      'en-150': 'Copy to clipboard',
+      'sk-SK': 'Kopírovať do schránky'
+    },
     jsonExport: {
       'en-150': 'JSON export',
       'sk-SK': 'JSON export'

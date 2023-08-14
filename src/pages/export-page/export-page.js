@@ -15,7 +15,12 @@ import { translate as _ } from '../../services/translations'
 import { TButton } from '../../components/button'
 import { EventToExport } from '../settings-page/event-to-export'
 import './export-page.scss'
-import { getJsonExportData, technicalExport } from './utils'
+import {
+  copyEventsToClipboard,
+  getDefaultEventsTagsTranslations,
+  getJsonExportData,
+  technicalExport
+} from './utils'
 import { useReactToPrint } from 'react-to-print'
 import { filterEvents } from '../../components/event-container/utils'
 
@@ -30,6 +35,8 @@ export const ExportPage = ({ events, filters, onBack, withDate }) => {
   const filteredEvents = filterEvents(filters, events)
 
   const jsonMessage = _(['export', 'jsonCopied'])
+
+  const eventsTagsTranslations = getDefaultEventsTagsTranslations()
 
   const handleOnEditorSwitch = () => {
     setWithEditors(!withEditors)
@@ -56,11 +63,27 @@ export const ExportPage = ({ events, filters, onBack, withDate }) => {
     technicalExport(filteredEvents, withDescription, withDate)
   }
 
+  const handleOnCopyClick = () => {
+    copyEventsToClipboard({
+      events: filteredEvents,
+      withDescription,
+      withEditors,
+      withDate,
+      tagsTranslations: eventsTagsTranslations
+    })
+  }
+
   return (
     <div className="export-page">
       <div className="export-page-container">
         <div className="export-actions">
           <div className="export-buttons-wrapper">
+            <TButton
+              onClick={handleOnCopyClick}
+              id="export-button-copy"
+              className="export-action-button">
+              {_(['export', 'copyEvents'])}
+            </TButton>
             <TButton
               onClick={handleOnTechnicalClick}
               id="export-button-technical"

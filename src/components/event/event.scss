@@ -117,6 +117,7 @@
 
   .event-accordion {
     width: 100%;
+    user-select: text;
 
     .event-summary-wrapper {
       display: flex;
@@ -124,15 +125,24 @@
       align-items: center;
       width: 100%;
       flex-direction: row-reverse;
+      user-select: text;
 
       .event-text-wrapper {
         display: flex;
         align-items: center;
         font-weight: bold;
+        user-select: text;
+        ::selection {
+          background-color: $grey1;
+        }
 
         .event-time {
           margin-right: 10px;
           color: $blue2;
+          user-select: text;
+          ::selection {
+            background-color: $grey1;
+          }
 
           &.no-time {
             margin-right: 0;
@@ -151,6 +161,11 @@
           border-radius: 5px;
           padding: 1px;
           box-sizing: border-box;
+
+          user-select: text;
+          ::selection {
+            background-color: $grey1;
+          }
         }
 
         .deleted-today {
@@ -165,11 +180,20 @@
           border-radius: 5px;
           padding: 1px;
           box-sizing: border-box;
+
+          user-select: text;
+          ::selection {
+            background-color: $grey1;
+          }
         }
       }
 
       .event-tags {
         display: flex;
+        user-select: text;
+        ::selection {
+          background-color: $grey1;
+        }
       }
     }
 
@@ -193,6 +217,17 @@
 
     .MuiAccordion-region {
       background-color: $blue4;
+    }
+
+    .event-content {
+      &:first-child {
+        user-select: text;
+
+        ::selection {
+          background-color: $grey1;
+        }
+      }
+
     }
   }
 }

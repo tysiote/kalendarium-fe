@@ -40,6 +40,16 @@
           border-color: $blue1;
         }
       }
+
+      &.event-content {
+        .t-input {
+          .MuiInputBase-root {
+            textarea {
+              font-family: Courier New;
+            }
+          }
+        }
+      }
     }
 
     .event-tags {
