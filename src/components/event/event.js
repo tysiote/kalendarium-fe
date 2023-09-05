@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
-import { getEventTime, getTagsFromEvent, isAddedToday } from './utils'
+import { getContentWithLineWraps, getEventTime, getTagsFromEvent, isAddedToday } from './utils'
 import { translate as _ } from '../../services/translations'
 import { Accordion, AccordionDetails, AccordionSummary, Checkbox, Tooltip } from '@mui/material'
 import './event.scss'
@@ -40,6 +40,7 @@ export const Event = ({
   } = data
 
   const dispatch = useDispatch()
+  const wrappedContent = getContentWithLineWraps(content)
 
   useEffect(() => {
     setChecked(isExported)
@@ -171,7 +172,13 @@ export const Event = ({
             </div>
           </AccordionSummary>
           <AccordionDetails>
-            <div className="event-content">{content}</div>
+            <div className="event-content">
+              {wrappedContent.map((line, idx) => (
+                <span className="content-line" key={`content-line-${id}-${idx}`}>
+                  {line}
+                </span>
+              ))}
+            </div>
           </AccordionDetails>
         </Accordion>
       </div>

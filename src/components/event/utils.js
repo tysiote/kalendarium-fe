@@ -67,3 +67,5 @@ export const isSameDay = (day1, day2) =>
 
 export const isAddedToday = (startTime, added) =>
   isSameDay(new Date(startTime), new Date(added)) && isSameDay(new Date(added), new Date())
+
+export const getContentWithLineWraps = (content) => content.split('\n')
