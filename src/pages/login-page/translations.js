@@ -20,6 +20,10 @@ export const translations = {
       'en-150': 'Invalid username',
       'sk-SK': 'Používateľ neexistuje'
     },
+    usernameExpired: {
+      'en-150': 'Account expired',
+      'sk-SK': 'Platnosť účtu vypršala'
+    },
     calendariumLabel: {
       'en-150': 'Calendarium',
       'sk-SK': 'Kalendárium'

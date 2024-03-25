@@ -34,6 +34,10 @@ export const LoginPage = ({ onLoginSuccess }) => {
     setError('invalidPassword')
   }
 
+  const handleOnExpired = () => {
+    setError('usernameExpired')
+  }
+
   const handleOnLoginSuccess = (data) => {
     dispatch(changeUsername(data.username))
     dispatch(changeLevel(data.level))
@@ -76,6 +80,10 @@ export const LoginPage = ({ onLoginSuccess }) => {
 
         if (data.status.code === 3) {
           handleOnPasswordFailed()
+        }
+
+        if (data.status.code === 8) {
+          handleOnExpired()
         }
 
         if (data.status.code === 101) {
