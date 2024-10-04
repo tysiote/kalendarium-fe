@@ -149,7 +149,7 @@ $font-size3: 18px;
       min-height: 30px;
       width: calc(100%/7);
       border: 0;
-      background-color: $background-color;
+      background-color: transparent;
       transition: 0.5s;
       padding-top: 4px;
 
@@ -169,6 +169,7 @@ $font-size3: 18px;
       align-items: center;
       justify-content: center;
       background-color: $background-color;
+      text-wrap: nowrap;
     }
   }
 

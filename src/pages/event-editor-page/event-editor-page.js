@@ -41,7 +41,7 @@ export const EventEditorPage = ({ onAdd, onEdit, onCancel, onRemove, onRestore, 
     tags1: eventTags1,
     tags2: eventTags2,
     tags3: eventTags3,
-    tags5: eventSportTypes,
+    sport_type: eventSportTypes,
     start_time: eventStartTime,
     no_time: eventNoTime,
     deleted: eventDeleted
@@ -59,6 +59,7 @@ export const EventEditorPage = ({ onAdd, onEdit, onCancel, onRemove, onRestore, 
         })
       : []
   )
+
   const [removeConfirmed, setRemoveConfirmed] = useState(false)
   const [startTime, setStartTime] = useState(
     editing ? convertStringDateToStartTime(eventStartTime) : new Date()
