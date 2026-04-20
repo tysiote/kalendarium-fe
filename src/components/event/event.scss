@@ -8,6 +8,7 @@
   min-width: 50px;
   margin-left: 5px;
   font-size: 16px;
+  padding: 0 4px;
 
   &.text {
     background-color: $black1;
@@ -36,6 +37,11 @@
 
   &.editor {
     background-color: $blue1;
+    color: $white2;
+  }
+
+  &.link {
+    background-color: $green2;
     color: $white2;
   }
 

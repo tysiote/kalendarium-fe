@@ -48,6 +48,10 @@ export const translations = {
       'en-150': 'Live',
       'sk-SK': 'Live'
     },
+    filterOutputMethodLink: {
+      'en-150': 'Archive',
+      'sk-SK': 'Archív'
+    },
     filterOutputMethodPhoto: {
       'en-150': 'Photo',
       'sk-SK': 'Foto'

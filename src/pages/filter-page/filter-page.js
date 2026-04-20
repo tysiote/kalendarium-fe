@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
 import { TButton } from '../../components/button'
 import { Checkbox, FormControl, FormControlLabel, FormGroup, FormLabel, Grid } from '@mui/material'
@@ -11,11 +11,19 @@ import {
   SPORT_TYPES_FILTERS
 } from './constants'
 import './filter-page.scss'
+import { logUserAction } from '../../services/redux-reducers/user-settings/user-settings-reducer'
+import { useDispatch } from 'react-redux'
 
 export const FilterPage = ({ initialFilters, onFilterApply, onFilterClose }) => {
   const [filters, setFilters] = useState(initialFilters ?? [])
+  const dispatch = useDispatch()
+
+  useEffect(() => {
+    dispatch(logUserAction({ a: 'filters_page_opened' }))
+  }, [])
 
   const handleOnFilterApply = () => {
+    dispatch(logUserAction({ a: 'filters_changed', v: translateFilters(filters) }))
     onFilterApply(filters, translateFilters(filters))
   }
 

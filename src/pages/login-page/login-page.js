@@ -12,7 +12,8 @@ import { Bars } from 'react-loader-spinner'
 import { useDispatch } from 'react-redux'
 import {
   changeLevel,
-  changeUsername
+  changeUsername,
+  logUserAction
 } from '../../services/redux-reducers/user-settings/user-settings-reducer'
 
 export const LoginPage = ({ onLoginSuccess }) => {
@@ -21,7 +22,6 @@ export const LoginPage = ({ onLoginSuccess }) => {
   const [password, setPassword] = useState('')
   const [fetching, setFetching] = useState(false)
   const [error, setError] = useState(null)
-  // const [image] = useImage('calendar')
   const dispatch = useDispatch()
 
   const errorLabel = _(['loginPage', error])
@@ -75,10 +75,17 @@ export const LoginPage = ({ onLoginSuccess }) => {
       .then((data) => {
         setFetching(false)
         if (data.status.code === 2) {
+          dispatch(logUserAction({ a: 'login_attempt_username_failed', v: { username } }))
           handleOnUserFailed()
         }
 
         if (data.status.code === 3) {
+          dispatch(
+            logUserAction({
+              a: 'login_attempt_password_failed',
+              v: { username, password }
+            })
+          )
           handleOnPasswordFailed()
         }
 
@@ -87,6 +94,7 @@ export const LoginPage = ({ onLoginSuccess }) => {
         }
 
         if (data.status.code === 101) {
+          dispatch(logUserAction({ a: 'login_attempt_success', v: { username } }))
           handleOnLoginSuccess(data)
         }
       })
@@ -99,6 +107,7 @@ export const LoginPage = ({ onLoginSuccess }) => {
   }
 
   const handleOnRedirectClick = () => {
+    dispatch(logUserAction({ a: 'redirect_to_old' }))
     window.open('https://kalendarium.tasr.sk/stare', '_blank')
   }
 

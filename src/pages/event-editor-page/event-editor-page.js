@@ -30,6 +30,8 @@ import {
 } from './utils'
 
 import RemoveCircleIcon from '@mui/icons-material/RemoveCircle'
+import { logUserAction } from '../../services/redux-reducers/user-settings/user-settings-reducer'
+import { useDispatch } from 'react-redux'
 
 export const EventEditorPage = ({ onAdd, onEdit, onCancel, onRemove, onRestore, event }) => {
   const editing = !!event
@@ -44,10 +46,12 @@ export const EventEditorPage = ({ onAdd, onEdit, onCancel, onRemove, onRestore, 
     sport_type: eventSportTypes,
     start_time: eventStartTime,
     no_time: eventNoTime,
-    deleted: eventDeleted
+    deleted: eventDeleted,
+    link: eventLink
   } = event ?? {}
   const [title, setTitle] = useState(eventTitle)
   const [content, setContent] = useState(eventContent)
+  const [linkValue, setLinkValue] = useState(eventLink)
   const [journalists, setJournalists] = useState(editors)
   const [tags, setTags] = useState(
     editing
@@ -66,6 +70,7 @@ export const EventEditorPage = ({ onAdd, onEdit, onCancel, onRemove, onRestore, 
   )
   const [noTime, setNoTime] = useState(eventNoTime)
   const [additionalTimes, setAdditionalTimes] = useState([])
+  const dispatch = useDispatch()
 
   const createEventLabel = _(['eventEditor', 'createEvent'])
   const updateEventLabel = _(['eventEditor', 'updateEvent'])
@@ -85,6 +90,8 @@ export const EventEditorPage = ({ onAdd, onEdit, onCancel, onRemove, onRestore, 
   const eventHashtag = _(['eventEditor', 'eventHashtag'])
   const addTimeLabel = _(['eventEditor', 'addTimeLabel'])
   const additionalTimesLabel = _(['eventEditor', 'additionalTimesLabel'])
+  const linkLabel = _(['eventEditor', 'linkLabel'])
+  const linkTooltip = _(['eventEditor', 'linkTooltip'])
 
   useEffect(() => {
     setTags(
@@ -113,7 +120,8 @@ export const EventEditorPage = ({ onAdd, onEdit, onCancel, onRemove, onRestore, 
       tags2,
       tags3,
       tags6: sport_type,
-      id
+      id,
+      link: linkValue
     }
     const URL = 'https://kalendarium.tasr.sk/public/index.php/api/events/edit'
 
@@ -126,11 +134,13 @@ export const EventEditorPage = ({ onAdd, onEdit, onCancel, onRemove, onRestore, 
     })
       .then((result) => result.json())
       .then(() => {
+        dispatch(logUserAction({ a: 'event_edited', v: { data: { ...newData } } }))
         onEdit()
       })
   }
 
   const handleOnCancelClick = () => {
+    dispatch(logUserAction({ a: 'event_editor_cancel_clicked' }))
     onCancel()
   }
 
@@ -148,7 +158,8 @@ export const EventEditorPage = ({ onAdd, onEdit, onCancel, onRemove, onRestore, 
       tags3,
       tags4: '',
       tags5: '',
-      tags6: sport_type
+      tags6: sport_type,
+      link: linkValue
     }
 
     const isBulk = !editing && additionalTimes?.length
@@ -176,22 +187,25 @@ export const EventEditorPage = ({ onAdd, onEdit, onCancel, onRemove, onRestore, 
     })
       .then((result) => result.json())
       .then(() => {
+        dispatch(logUserAction({ a: 'event_added', v: { data: { ...newEvents } } }))
         onAdd()
       })
   }
 
   const handleOnRemoveClick = (removePower) => {
     const URL = 'https://kalendarium.tasr.sk/public/index.php/api/events/delete'
+    const data = { id, delete_method: removePower === 1 ? 'soft' : 'hard' }
 
     fetch(URL, {
       method: 'POST',
       credentials: 'include',
-      body: JSON.stringify({ id, delete_method: removePower === 1 ? 'soft' : 'hard' }),
+      body: JSON.stringify(data),
       mode: 'cors',
       headers: { 'content-type': 'application/json; charset=UTF-8' }
     })
       .then((result) => result.json())
       .then(() => {
+        dispatch(logUserAction({ a: 'event_removed', v: { data } }))
         onRemove(id, removePower)
       })
   }
@@ -208,6 +222,7 @@ export const EventEditorPage = ({ onAdd, onEdit, onCancel, onRemove, onRestore, 
     })
       .then((result) => result.json())
       .then(() => {
+        dispatch(logUserAction({ a: 'event_restored', v: { id } }))
         onRestore(id)
       })
   }
@@ -233,6 +248,20 @@ export const EventEditorPage = ({ onAdd, onEdit, onCancel, onRemove, onRestore, 
   const handleOnRemoveTimeClick = (timeId) => {
     setAdditionalTimes(additionalTimes.filter((time, idx) => idx !== timeId))
   }
+
+  const renderLink = () => (
+    <Tooltip title={linkTooltip} arrow placement="bottom-start">
+      <div className="event-editor-field event-link">
+        <TInput
+          onChange={(newValue) => setLinkValue(newValue)}
+          value={linkValue}
+          label={linkLabel}
+          variant="standard"
+          id="event-editor-link"
+        />
+      </div>
+    </Tooltip>
+  )
 
   const renderPageHeader = () => {
     return (
@@ -462,6 +491,7 @@ export const EventEditorPage = ({ onAdd, onEdit, onCancel, onRemove, onRestore, 
         {renderJournalists()}
         {renderTags()}
         {renderPicker()}
+        {renderLink()}
         {editing && renderRemoveOptions()}
       </div>
     )

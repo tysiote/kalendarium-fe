@@ -15,6 +15,7 @@ body {
     transition: ease-out;
     transition-duration: 0.25s;
     width: calc(100% - (#{$main-drawer-slim-width} - 100px));
+    overflow-y: auto;
 
     &.drawer-opened {
       margin-left: $main-drawer-width;

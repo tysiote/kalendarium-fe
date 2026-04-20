@@ -32,6 +32,7 @@ import {
   updateOpenedEvents,
   updateShowEditors
 } from '../../services/redux-reducers/application/application-reducer'
+import { logUserAction } from '../../services/redux-reducers/user-settings/user-settings-reducer'
 
 export const EventContainer = ({
   day,
@@ -90,6 +91,7 @@ export const EventContainer = ({
   ])
 
   const handleEditModeClick = () => {
+    dispatch(logUserAction({ a: 'edit_switch_clicked', v: !editingMode }))
     dispatch(updateEditingMode(!editingMode))
   }
 
@@ -98,6 +100,7 @@ export const EventContainer = ({
   }
 
   const handleOnEditClick = (id) => {
+    dispatch(logUserAction({ a: 'event_edit_clicked', v: { id } }))
     onEditEvent(id)
   }
 
@@ -124,17 +127,23 @@ export const EventContainer = ({
 
   const handleOnExportSwitchClick = () => {
     const newValue = !exportingMode
+    dispatch(logUserAction({ a: 'export_switch_clicked', v: newValue }))
     dispatch(updateExportingMode(newValue))
   }
 
   const handleShowEditorsClick = () => {
+    dispatch(logUserAction({ a: 'editors_switch_clicked', v: !showEditors }))
     dispatch(updateShowEditors(!showEditors))
   }
 
   const handleOnOpenAllClick = () => {
     const nextOpenedItems = getNextOpenedEventsState(events, openedEvents)
+    const nextSwitchState = getSwitchState(events, nextOpenedItems)
+
     dispatch(updateOpenedEvents(nextOpenedItems))
-    setAllEventsChecked(getSwitchState(events, nextOpenedItems))
+    dispatch(logUserAction({ a: 'all_events_switch_clicked', v: nextSwitchState }))
+
+    setAllEventsChecked(nextSwitchState)
   }
 
   const handleOnSearchChange = (newValue) => {
@@ -145,6 +154,7 @@ export const EventContainer = ({
   const handleOnFilterClick = (filterName) => {
     const newFilters = removeActiveFilter(filters, filterName)
     const newFlatFilters = createFlatFilters(newFilters)
+    dispatch(logUserAction({ a: 'filter_clicked', v: filterName }))
     onFilterRemove(newFlatFilters, newFilters)
   }
 
@@ -165,6 +175,7 @@ export const EventContainer = ({
     })
       .then((result) => result.json())
       .then(() => {
+        dispatch(logUserAction({ a: 'event_removed', v: { id: eventModalId, deleteMethod } }))
         onEventRemoved(eventModalId, power)
         dispatch(updateEventModalId(null))
       })
@@ -378,7 +389,6 @@ export const EventContainer = ({
     <div className="event-container">
       {renderHeadline()}
       {renderControls()}
-      {/*{renderLoading()}*/}
       {renderEventModal()}
       {loading ? renderLoading() : renderEvents()}
     </div>

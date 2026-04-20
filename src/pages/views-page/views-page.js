@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
 import { viewTypes } from './constants'
 import { translate as _ } from '../../services/translations'
@@ -24,6 +24,8 @@ import {
   getWeeks
 } from './utils'
 import { DatePicker } from '../../components/date-time-picker'
+import { logUserAction } from '../../services/redux-reducers/user-settings/user-settings-reducer'
+import { useDispatch } from 'react-redux'
 
 const { CUSTOM, DAY, MONTH, WEEK } = viewTypes
 
@@ -33,6 +35,7 @@ export const ViewsPage = ({ initialView, initialFrom, initialTo, onViewApply, on
   const [to, setTo] = useState(initialTo ?? new Date())
   const [week, setWeek] = useState(0)
   const [month, setMonth] = useState(0)
+  const dispatch = useDispatch()
 
   const weekViewLabel = _(['views', 'weekSelectLabel'])
   const monthViewLabel = _(['views', 'monthSelectLabel'])
@@ -40,6 +43,10 @@ export const ViewsPage = ({ initialView, initialFrom, initialTo, onViewApply, on
   const customViewToLabel = _(['views', 'toLabel'])
   const customViewDateRangeLabel = _(['views', 'dateRange'])
   const dynamicViewLabels = getDynamicViewLabels(_)
+
+  useEffect(() => {
+    dispatch(logUserAction({ a: 'views_page_opened' }))
+  }, [])
 
   const handleOnWeekSelect = (event) => {
     setWeek(event.target.value)

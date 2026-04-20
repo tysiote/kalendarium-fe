@@ -21,6 +21,7 @@ import PropTypes from 'prop-types'
 import { useDispatch, useSelector, useStore } from 'react-redux'
 import { EventEditorPage } from './pages/event-editor-page'
 import { updateEvents } from './services/redux-reducers/application/application-reducer'
+import { logUserAction } from './services/redux-reducers/user-settings/user-settings-reducer'
 
 export const Main = ({ onLogout }) => {
   const [drawerOpened, setDrawerOpened] = useState(false)
@@ -45,6 +46,7 @@ export const Main = ({ onLogout }) => {
   const adminZoneLabel = _(['mainDrawer', 'adminZone'])
 
   const handleOnLogout = () => {
+    dispatch(logUserAction({ a: 'logout' }))
     onLogout()
   }
 
@@ -61,6 +63,7 @@ export const Main = ({ onLogout }) => {
     setView(viewTypes.DAY)
     setFetching(true)
     setDrawerOpened(window.innerWidth > 800)
+    dispatch(logUserAction({ a: 'fetch_events', v: { day: newValue.toISOString() } }))
     fetchEventsFromDay(newValue).then((result) => {
       setFetching(false)
       // setEvents(sortEventsByTime(result.data))
@@ -101,7 +104,14 @@ export const Main = ({ onLogout }) => {
     setView(newView)
     setViewDates(newViewDates)
     setFetching(true)
-    fetchEventsFromDay(selectedDate, newViewDates.from, newViewDates.to).then((result) => {
+    dispatch(
+      logUserAction({ a: 'fetch_events', v: { from: newViewDates.from, to: newViewDates.to } })
+    )
+    fetchEventsFromDay(
+      selectedDate,
+      newViewDates.from?.toISOString(),
+      newViewDates.to?.toISOString()
+    ).then((result) => {
       setFetching(false)
       dispatch(updateEvents(sortEventsByTime(result.data)))
       setFetchTimestamp(new Date().getTime())
@@ -114,19 +124,23 @@ export const Main = ({ onLogout }) => {
   }
 
   const handleOnServicesClick = () => {
+    dispatch(logUserAction({ a: 'etasr_clicked' }))
     window.open('https://etasr.sk/login', '_blank')
   }
 
   const handleOnAdminClick = () => {
-    window.open('https://kalendarium.tasr.sk/admin-zona/', '_blank')
+    dispatch(logUserAction({ a: 'admin_zone_clicked' }))
+    window.open('https://kalendarium.tasr.sk/admin/', '_blank')
   }
 
   const handleOnAddEventClick = () => {
     setEditedEvent(null)
+    dispatch(logUserAction({ a: 'event_editor_page_clicked', v: { action: 'add' } }))
     setCurrentPage('event-editor')
   }
 
   const handleOnEditEventClick = (id) => {
+    dispatch(logUserAction({ a: 'event_editor_page_clicked', v: { action: 'edit', id } }))
     setEditedEvent(getEventById(events, id))
     setCurrentPage('event-editor')
   }
@@ -225,7 +239,10 @@ export const Main = ({ onLogout }) => {
             {_(['mainDrawer', 'exportEvents'])}
           </TButton>
           <TButton
-            onClick={handleOnSyncClick}
+            onClick={() => {
+              dispatch(logUserAction({ a: 'sync_events_clicked' }))
+              handleOnSyncClick()
+            }}
             id={'menu-button-sync'}
             className="drawer-menu-button">
             {_(['mainDrawer', 'sync'])}

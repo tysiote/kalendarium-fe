@@ -30,11 +30,12 @@
 
       .back-button {
         width: 200px;
-        background-color: $blue1;
-        color: $white1;
+        border: 1px solid $grey1;
+        color: $blue1;
 
         &:hover {
-          background-color: $blue2;
+          border-color: $blue2;
+          background-color: $blue4;
         }
       }
     }

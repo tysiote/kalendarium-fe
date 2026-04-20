@@ -36,7 +36,8 @@ export const Event = ({
     tags2,
     added,
     editors,
-    deleted
+    deleted,
+    link
   } = data
 
   const dispatch = useDispatch()
@@ -83,22 +84,32 @@ export const Event = ({
   const handleOnSoftDeleteClick = () => {
     if (!deleted) {
       dispatch(updateEventModalId({ id, deletePower: 1 }))
-      // handleOnDelete(2)
     }
   }
 
   const handleOnHardDeleteClick = () => {
     if (!deleted) {
       dispatch(updateEventModalId({ id, deletePower: 2 }))
-      // handleOnDelete(2)
+    }
+  }
+
+  const handleOnTagClick = (variant) => {
+    if (variant === 'link') {
+      window.open(link, '_blank')
     }
   }
 
   const renderTags = () => {
-    const tags = getTagsFromEvent(tags2, showEditors ? editors : null)
+    const tags = getTagsFromEvent({ tags: tags2, editors: showEditors ? editors : null, link })
 
     return tags.map((tag, idx) => (
-      <EventTag variant={tag.variant} title={tag.title} key={`event-tag-${id}-${tag}-${idx}`} />
+      <EventTag
+        variant={tag.variant}
+        title={tag.title}
+        key={`event-tag-${id}-${tag}-${idx}`}
+        onClick={tag.variant === 'link' ? handleOnTagClick : undefined}
+        id={`${id}`}
+      />
     ))
   }
 

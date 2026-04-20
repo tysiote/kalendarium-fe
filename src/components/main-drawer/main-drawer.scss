@@ -1,10 +1,16 @@
 @import "src/constants";
 
+$maximum-page-height: 100vh;
+$maximum-page-height: 100svh;
+$maximum-page-height: 100lvh;
+$maximum-page-height: 100dvh;
+
 .main-drawer-slim {
   width: 50px;
   background-color: $blue1;
   color: $white2;
-  height: 100vh;
+  height: $maximum-page-height;
+
   display: flex;
   justify-content: center;
   position: fixed;

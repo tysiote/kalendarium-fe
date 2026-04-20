@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import PropTypes from 'prop-types'
 import {
   FormControlLabel,
@@ -23,14 +23,21 @@ import {
 } from './utils'
 import { useReactToPrint } from 'react-to-print'
 import { filterEvents } from '../../components/event-container/utils'
+import { logUserAction } from '../../services/redux-reducers/user-settings/user-settings-reducer'
+import { useDispatch } from 'react-redux'
 
 export const ExportPage = ({ events, filters, onBack, withDate }) => {
   const [withEditors, setWithEditors] = useState(false)
   const [withDescription, setWithDescription] = useState(false)
+  const dispatch = useDispatch()
   const componentRef = useRef()
   const handlePrint = useReactToPrint({
     content: () => componentRef.current
   })
+
+  useEffect(() => {
+    dispatch(logUserAction({ a: 'export_page_opened' }))
+  }, [])
 
   const filteredEvents = filterEvents(filters, events)
 
@@ -39,31 +46,38 @@ export const ExportPage = ({ events, filters, onBack, withDate }) => {
   const eventsTagsTranslations = getDefaultEventsTagsTranslations()
 
   const handleOnEditorSwitch = () => {
+    dispatch(logUserAction({ a: 'editors_export_switch_clicked', v: !withEditors }))
     setWithEditors(!withEditors)
   }
 
   const handleOnDescriptionSwitch = () => {
+    dispatch(logUserAction({ a: 'description_export_switch_clicked', v: !withDescription }))
     setWithDescription(!withDescription)
   }
 
   const handleOnBackClick = () => {
+    dispatch(logUserAction({ a: 'export_page_cancel_clicked' }))
     onBack()
   }
 
   const handleOnPrintClick = () => {
+    dispatch(logUserAction({ a: 'export_print_clicked' }))
     handlePrint()
   }
 
   const handleOnJsonClick = () => {
+    dispatch(logUserAction({ a: 'export_json_clicked' }))
     getJsonExportData(filteredEvents)
     alert(jsonMessage)
   }
 
   const handleOnTechnicalClick = () => {
+    dispatch(logUserAction({ a: 'export_technical_clicked' }))
     technicalExport(filteredEvents, withDescription, withDate)
   }
 
   const handleOnCopyClick = () => {
+    dispatch(logUserAction({ a: 'export_copy_to_clipboard_clicked' }))
     copyEventsToClipboard({
       events: filteredEvents,
       withDescription,

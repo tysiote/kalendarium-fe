@@ -24,7 +24,7 @@ const getWeekDay = (value, locale = 'sk-SK') =>
   Intl.DateTimeFormat(locale, { weekday: 'long' }).format(new Date(value))
 
 export const formatExportTags = (tags) =>
-  getTagsFromEvent(tags)
+  getTagsFromEvent({ tags })
     .map((t) =>
       _(['filters', `filterOutputMethod${t.variant[0].toUpperCase()}${t.variant.slice(1)}`])
     )
@@ -118,7 +118,7 @@ const technicalExportOne = (e, limit, content, withDate) => {
     res +=
       '<br>' +
       insertTechnicalBreakes(
-        getTagsFromEvent(e.tags2, undefined, true)
+        getTagsFromEvent({ tags: e.tags2, withTranslations: true })
           .map((t) => t.variant)
           .join(', '),
         limit - 10,

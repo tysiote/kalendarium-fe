@@ -27,20 +27,21 @@ export const getEventTime = (eventStartTime, noTime, withDate) => {
 export const getEditorsFromEvent = (editors) =>
   editors.includes('|') ? editors.split('|') : [editors]
 
-export const getTagsFromEvent = (tags, editors, withTranslations) =>
+export const getTagsFromEvent = ({ tags, editors, withTranslations, link }) =>
   createObjectsFromTags(
-    (editors?.length ? getEditorsFromEvent(editors) : []).concat(
-      removeDuplicates(tags?.length ? (tags.includes('|') ? tags.split('|') : [tags]) : [])
-    ),
+    (editors?.length ? getEditorsFromEvent(editors) : [])
+      .concat(removeDuplicates(tags?.length ? (tags.includes('|') ? tags.split('|') : [tags]) : []))
+      .concat(link ? ['link'] : []),
     withTranslations
   )
-const VALID_TAGS = ['text', 'video', 'audio', 'photo', 'live']
+const VALID_TAGS = ['text', 'video', 'audio', 'photo', 'live', 'link']
 const tagsTranslations = {
   text: 'text',
   video: 'video',
   audio: 'zvuk',
   photo: 'foto',
-  live: 'live'
+  live: 'live',
+  link: 'link'
 }
 const createObjectsFromTags = (tags, withTranslations) =>
   tags.map((tag) =>

@@ -1,0 +1,64 @@
+@import "src/constants";
+
+.content-tabs {
+  width: 100%;
+  padding: 0 10px;
+  margin: 20px 0;
+
+  .content-tabs-labels {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    width: 100%;
+
+    .content-tabs-label {
+      color: $black1;
+      background-color: $white2;
+      border-bottom: 1px solid $black1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 10px 20px;
+      min-width: 200px;
+      max-width: 300px;
+      width: 100%;
+
+      &:hover {
+        cursor: pointer;
+        background-color: $blue4;
+        color: $blue1;
+      }
+
+      &.active {
+        font-weight: bold;
+        background-color: $blue2;
+        color: $white1;
+        border-bottom: 1px solid $blue2;
+
+        &:hover {
+          background-color: $blue1;
+        }
+      }
+      
+      &.disabled {
+        color: $grey1;
+        
+        &:hover {
+          color: $grey1;
+          background-color: $white2;
+          cursor: default;
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 1460px) {
+  .content-tabs {
+    .content-tabs-labels {
+      justify-content: center;
+      align-items: center;
+    }
+  }
+
+}

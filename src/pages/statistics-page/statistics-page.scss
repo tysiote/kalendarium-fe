@@ -1,0 +1,38 @@
+@import "src/constants";
+
+.statistics-page {
+  .statistics-page-password-form {
+    .password-form {
+      display: flex;
+      margin-top: 15px;
+
+      .password-input {
+        max-width: 200px;
+      }
+    }
+
+    .statistics-incorrect-password {
+      display: block;
+      visibility: hidden;
+      color: $red2;
+      font-weight: bold;
+      margin-top: 10px;
+
+      &.visible {
+        visibility: visible;
+      }
+    }
+  }
+
+  .t-button {
+    max-width: 300px;
+    min-width: 250px;
+    background-color: $blue2;
+    color: $white1;
+    margin-left: 15px;
+
+    &:hover {
+      background-color: $blue1;
+    }
+  }
+}

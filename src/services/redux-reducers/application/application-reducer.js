@@ -3,7 +3,7 @@ import { createSlice } from '@reduxjs/toolkit'
 export const applicationReducer = createSlice({
   name: 'applicationReducer',
   initialState: {
-    version: '3.1.5',
+    version: '3.2.1',
     editingMode: false,
     exportingMode: false,
     showEditors: false,
@@ -12,7 +12,9 @@ export const applicationReducer = createSlice({
     events: [],
     filteredEvents: [],
     eventModalId: null,
-    eventDeletePower: null
+    eventDeletePower: null,
+    statisticsLoaded: false,
+    statisticsPassword: ''
   },
   reducers: {
     updateEditingMode: (state, action) => {
@@ -40,6 +42,12 @@ export const applicationReducer = createSlice({
       const { id, deletePower } = action.payload ?? {}
       state.eventModalId = id
       state.eventDeletePower = deletePower
+    },
+    updateStatisticsLoaded: (state, action) => {
+      state.statisticsLoaded = action.payload
+    },
+    updateStatisticsPassword: (state, action) => {
+      state.statisticsPassword = action.payload
     }
   }
 })
@@ -51,6 +59,8 @@ export const {
   updateExportedEvents,
   updateOpenedEvents,
   updateEvents,
-  updateEventModalId
+  updateEventModalId,
+  updateStatisticsLoaded,
+  updateStatisticsPassword
 } = applicationReducer.actions
 export default applicationReducer.reducer

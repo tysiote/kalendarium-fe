@@ -74,6 +74,16 @@ export const translations = {
     addTimeLabel: {
       'en-150': 'Add another time',
       'sk-SK': 'Pridať ďalší čas'
+    },
+    linkLabel: {
+      'en-150': 'Insert a web-link for the event',
+      'sk-SK': 'Vložiť link pre udalosť.'
+    },
+    linkTooltip: {
+      'en-150':
+        'It is possible to add more information about the event through a link. This link will appear next to the "method" of event creation (as a brick). Link should start with "http://", "https://"',
+      'sk-SK':
+        'Tu je možné poskytnúť viac udalostí pre danú udalosť prostredníctvom linku. Tento link sa zobrazí vedľa "spôsobu" zhotovenia udalosti (ako tehlička). Link by mal začínať "http://", "https://".'
     }
   }
 }
