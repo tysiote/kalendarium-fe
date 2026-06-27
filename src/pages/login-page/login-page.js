@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import md5 from 'md5'
 import { TInput } from '../../components/input'
 import { TButton } from '../../components/button'
@@ -7,7 +7,6 @@ import { TButton } from '../../components/button'
 import { translate as _ } from '../../services/translations'
 
 import './login-page.scss'
-import { useCookies } from 'react-cookie'
 import { Bars } from 'react-loader-spinner'
 import { useDispatch } from 'react-redux'
 import {
@@ -15,14 +14,21 @@ import {
   changeUsername,
   logUserAction
 } from '../../services/redux-reducers/user-settings/user-settings-reducer'
+import { getCookieValue, setCookieValue } from './utils'
 
 export const LoginPage = ({ onLoginSuccess }) => {
-  const [lastUsedUsername, setLastUsedUsername] = useCookies(['lastUsedUsername'])
+  const [lastUsedUsername, setLastUsedUsername] = useState('')
   const [username, setUsername] = useState(lastUsedUsername?.lastUsedUsername ?? '')
   const [password, setPassword] = useState('')
   const [fetching, setFetching] = useState(false)
   const [error, setError] = useState(null)
   const dispatch = useDispatch()
+
+  useEffect(() => {
+    const savedUsername = getCookieValue('lastUsedUsername')
+    setLastUsedUsername(savedUsername)
+    setUsername(savedUsername)
+  }, [])
 
   const errorLabel = _(['loginPage', error])
 
@@ -41,7 +47,7 @@ export const LoginPage = ({ onLoginSuccess }) => {
   const handleOnLoginSuccess = (data) => {
     dispatch(changeUsername(data.username))
     dispatch(changeLevel(data.level))
-    setLastUsedUsername('lastUsedUsername', username)
+    setCookieValue('lastUsedUsername', username)
     onLoginSuccess()
   }
 

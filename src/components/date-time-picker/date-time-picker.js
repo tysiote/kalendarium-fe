@@ -12,7 +12,8 @@ export const DateTimePicker = ({
   mode,
   onModeChange,
   onChange,
-  onClickOutside
+  onClickOutside,
+  futureOnly = false
 }) => {
   const [noTime, setNoTime] = useState(false)
   const ref = useRef(null)
@@ -54,6 +55,7 @@ export const DateTimePicker = ({
         value={value}
         onChange={handleOnValueChange}
         onModeChange={() => handleOnModeChange(calendarModes.time)}
+        futureOnly={futureOnly}
       />
     )
   }
@@ -83,7 +85,8 @@ DateTimePicker.propTypes = {
   closeOnSelect: PropTypes.bool,
   className: PropTypes.string,
   mode: PropTypes.oneOf([calendarModes.date, calendarModes.time]),
-  onClickOutside: PropTypes.func
+  onClickOutside: PropTypes.func,
+  futureOnly: PropTypes.bool
 }
 
 DateTimePicker.defaultProps = {
@@ -93,5 +96,6 @@ DateTimePicker.defaultProps = {
   className: null,
   mode: calendarModes.date,
   onModeChange: () => {},
-  onClickOutside: () => {}
+  onClickOutside: () => {},
+  futureOnly: false
 }

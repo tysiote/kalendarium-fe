@@ -306,7 +306,12 @@ export const EventEditorPage = ({ onAdd, onEdit, onCancel, onRemove, onRestore, 
     return (
       <div className="event-editor-field event-picker">
         <div className="event-editor-picker-line">
-          <PickerWithInput value={startTime} onChange={handleOnPickerChange} noTime={noTime} />
+          <PickerWithInput
+            value={startTime}
+            onChange={handleOnPickerChange}
+            noTime={noTime}
+            futureOnly={true}
+          />
         </div>
 
         {!editing && (
@@ -325,6 +330,7 @@ export const EventEditorPage = ({ onAdd, onEdit, onCancel, onRemove, onRestore, 
                     handleOnAdditionalPickerChange(newValue, newNoTime, idx)
                   }
                   noTime={time.noTime}
+                  futureOnly={true}
                 />
               </div>
             ))}

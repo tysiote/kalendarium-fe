@@ -113,6 +113,26 @@ export const translations = {
     modalCancelLabel: {
       'en-150': 'Cancel',
       'sk-SK': 'Ponechať'
+    },
+    dailyPlanLabel: {
+      'en-150': 'Daily Plan',
+      'sk-SK': 'Interný prehľad'
+    },
+    dailyPlanSaveButtonLabel: {
+      'en-150': 'Save',
+      'sk-SK': 'Uložiť'
+    },
+    dailyPlanDismissButtonLabel: {
+      'en-150': 'Dismiss',
+      'sk-SK': 'Späť'
+    },
+    dailyPlanAddedAtLabel: {
+      'en-150': 'Added',
+      'sk-SK': 'Pridané'
+    },
+    dailyPlanEditedByLabel: {
+      'en-150': 'Last edit',
+      'sk-SK': 'Posledná úprava'
     }
   }
 }

@@ -14,7 +14,8 @@ export const PickerWithInput = ({
   disabled,
   className,
   autocomplete,
-  noTime: initialNoTime
+  noTime: initialNoTime,
+  futureOnly = false
 }) => {
   const store = useStore()
   const locale = store.getState().locale.locale
@@ -116,6 +117,7 @@ export const PickerWithInput = ({
           onModeChange={handleOnModeChange}
           onClickOutside={handleOnClickOutside}
           disabled={disabled}
+          futureOnly={futureOnly}
         />
       )}
     </div>
@@ -128,7 +130,8 @@ PickerWithInput.propTypes = {
   disabled: PropTypes.bool,
   className: PropTypes.string,
   autocomplete: PropTypes.bool,
-  noTime: PropTypes.bool
+  noTime: PropTypes.bool,
+  futureOnly: PropTypes.bool
 }
 
 PickerWithInput.defaultProps = {
@@ -137,5 +140,6 @@ PickerWithInput.defaultProps = {
   disabled: false,
   className: null,
   autocomplete: false,
-  noTime: false
+  noTime: false,
+  futureOnly: false
 }

@@ -50,7 +50,7 @@ export const translations = {
     },
     filterOutputMethodLink: {
       'en-150': 'Archive',
-      'sk-SK': 'Archív'
+      'sk-SK': 'Link'
     },
     filterOutputMethodPhoto: {
       'en-150': 'Photo',

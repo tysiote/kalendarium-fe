@@ -20,7 +20,7 @@ function App() {
   useEffect(() => {
     const URL = 'https://kalendarium.tasr.sk/public/index.php/ping'
     fetch(URL, {
-      mode: 'cors',
+      // mode: 'cors',
       method: 'POST',
       credentials: 'include',
       body: '',
@@ -39,6 +39,7 @@ function App() {
           setIsLoggedIn(true)
         }
       })
+      .catch(() => {})
   }, [])
 
   const handleOnLoginSuccess = (value) => {

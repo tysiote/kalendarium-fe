@@ -15,3 +15,32 @@ export const fetchEventsFromDay = (value, from, to) => {
     .then((res) => res.json())
     .then((result) => result)
 }
+
+const getFormattedDate = (date) => {
+  const today = date ?? new Date()
+  return `${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}`
+}
+
+export const getDailyPlan = async (date = new Date()) => {
+  return fetch(`https://kalendarium.tasr.sk/public/index.php/api/dailyPlan`, {
+    method: 'POST',
+    credentials: 'include',
+    mode: 'cors',
+    headers: { 'content-type': 'application/json; charset=UTF-8' },
+    body: JSON.stringify({ date: getFormattedDate(date) })
+  })
+    .then((res) => res.json())
+    .then((result) => result)
+}
+
+export const saveDailyPlan = async (content, date = new Date()) => {
+  return fetch(`https://kalendarium.tasr.sk/public/index.php/api/dailyPlanSave`, {
+    method: 'POST',
+    credentials: 'include',
+    mode: 'cors',
+    headers: { 'content-type': 'application/json; charset=UTF-8' },
+    body: JSON.stringify({ date: getFormattedDate(date), content })
+  })
+    .then((res) => res.json())
+    .then((result) => result)
+}

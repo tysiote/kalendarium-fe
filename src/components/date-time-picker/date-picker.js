@@ -26,7 +26,8 @@ export const DatePicker = ({
   className,
   onChange,
   onModeChange,
-  dateFrom
+  dateFrom,
+  futureOnly = false
 }) => {
   const [value, setValue] = useState(initialValue)
   const initialViewingValue = getFirstDayOfMonth(value || new Date())
@@ -39,6 +40,8 @@ export const DatePicker = ({
   const [wrapperWidth, setWrapperWidth] = useState(0)
 
   const wrapperRef = useRef(null)
+  const today = new Date()
+  today.setHours(0, 0, 0, 0)
 
   const handleResize = () => {
     const newWidth = wrapperRef?.current?.offsetWidth
@@ -152,7 +155,7 @@ export const DatePicker = ({
                 key={`week${idxW}`}
                 style={{ height: `${rowHeight}px` }}>
                 {week.map((day, idx) => {
-                  const dayDisabled = day.date < dateFrom
+                  const dayDisabled = day.date < dateFrom || (futureOnly && day.date < today)
                   return (
                     <div
                       className={classNames('calendar-cell', {
@@ -199,12 +202,14 @@ DatePicker.propTypes = {
   className: PropTypes.string,
   onChange: PropTypes.func,
   onModeChange: PropTypes.func,
-  dateFrom: PropTypes.instanceOf(Date)
+  dateFrom: PropTypes.instanceOf(Date),
+  futureOnly: PropTypes.bool
 }
 
 DatePicker.defaultProps = {
   className: null,
   onChange: () => {},
   onModeChange: null,
-  dateFrom: null
+  dateFrom: null,
+  futureOnly: false
 }

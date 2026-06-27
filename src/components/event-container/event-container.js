@@ -15,7 +15,7 @@ import {
   isEventOpened,
   removeActiveFilter
 } from './utils'
-import { Switch, FormControlLabel, Modal, Box } from '@mui/material'
+import { Switch, FormControlLabel, Modal, Box, TextareaAutosize } from '@mui/material'
 
 import './event-container.scss'
 import { TInput } from '../input'
@@ -33,6 +33,8 @@ import {
   updateShowEditors
 } from '../../services/redux-reducers/application/application-reducer'
 import { logUserAction } from '../../services/redux-reducers/user-settings/user-settings-reducer'
+import { getDailyPlan, saveDailyPlan } from '../../services/fetching/fetching'
+import { formatDate } from '../date-time-picker/utils'
 
 export const EventContainer = ({
   day,
@@ -65,6 +67,10 @@ export const EventContainer = ({
   const [filteredEvents, setFilteredEvents] = useState(
     loading ? [] : filterEvents(filters, events, searchValue)
   )
+  const [dailyPlanOpened, setDailyPlanOpened] = useState(false)
+  const [dailyPlan, setDailyPlan] = useState(null)
+  const { content = '', edited_at, created_at, edited_by, added_by } = dailyPlan ?? {}
+  const [dailyPlanValue, setDailyPlanValue] = useState(content ?? '')
 
   const exportAllEventsLabel = _(['events', 'exportAllEvents'])
   const showEditorsLabel = _(['events', 'showEditors'])
@@ -75,6 +81,10 @@ export const EventContainer = ({
   const modalHardDeleteLabel = _(['events', 'modalHardDeleteLabel'])
   const modalSoftDeleteLabel = _(['events', 'modalSoftDeleteLabel'])
   const modalCancelLabel = _(['events', 'modalCancelLabel'])
+  const dailyPlanLabel = _(['events', 'dailyPlanLabel'])
+  const dailyPlanSaveLabel = _(['events', 'dailyPlanSaveButtonLabel'])
+  const dailyPlanDismissLabel = _(['events', 'dailyPlanDismissButtonLabel'])
+  const dailyPlanLastEditLabel = _(['events', 'dailyPlanEditedByLabel'])
 
   useEffect(() => {
     setSearchValue('')
@@ -89,6 +99,15 @@ export const EventContainer = ({
     exportedEvents,
     openedEvents
   ])
+
+  useEffect(() => {
+    getDailyPlan(day).then((data) => {
+      if (data?.status?.code === 100) {
+        setDailyPlan(data.data)
+        setDailyPlanValue(data.data?.content ?? '')
+      }
+    })
+  }, [day]) // re-fetch when the selected date changes
 
   const handleEditModeClick = () => {
     dispatch(logUserAction({ a: 'edit_switch_clicked', v: !editingMode }))
@@ -179,6 +198,12 @@ export const EventContainer = ({
         onEventRemoved(eventModalId, power)
         dispatch(updateEventModalId(null))
       })
+  }
+
+  const handleOnDailyPlanSaveClick = () => {
+    saveDailyPlan(dailyPlanValue, day).then(() => {
+      setDailyPlanOpened(false)
+    })
   }
 
   const renderHeadline = () => {
@@ -385,11 +410,64 @@ export const EventContainer = ({
     )
   }
 
+  const renderDailyPlanButton = () => {
+    if (userLevel < 2 || viewType !== viewTypes.DAY) {
+      return null
+    }
+
+    return (
+      <TButton onClick={() => setDailyPlanOpened(true)} id="daily-plan-button" variant="primary">
+        {dailyPlanLabel}
+      </TButton>
+    )
+  }
+
+  const renderDailyPlanModal = () => {
+    const lastEdit = edited_at ? edited_at : created_at
+    const lastEditedBy = edited_at ? edited_by : added_by
+
+    return (
+      <Modal open={dailyPlanOpened} onClose={() => setDailyPlanOpened(false)}>
+        <Box>
+          <div className="daily-plan-modal">
+            <h2 id="modal-title">{`${dailyPlanLabel} - ${formatDate(day)}`}</h2>
+            <div className="daily-plan-content">
+              <TextareaAutosize
+                value={dailyPlanValue}
+                minRows={30}
+                onChange={(e) => setDailyPlanValue(e.target.value)}
+              />
+            </div>
+            {lastEdit && (
+              <div className="daily-plan-info">
+                <span className="daily-plan-info-item-label">{dailyPlanLastEditLabel}: </span>
+                <span className="daily-plan-info-item-value">{`${lastEdit} (${lastEditedBy})`}</span>
+              </div>
+            )}
+            <div className="daily-plan-buttons">
+              <TButton onClick={() => setDailyPlanOpened(false)} id="daily-plan-dismiss-button">
+                {dailyPlanDismissLabel}
+              </TButton>
+              <TButton
+                onClick={handleOnDailyPlanSaveClick}
+                id="daily-plan-save-button"
+                className="primary">
+                {dailyPlanSaveLabel}
+              </TButton>
+            </div>
+          </div>
+        </Box>
+      </Modal>
+    )
+  }
+
   return (
     <div className="event-container">
       {renderHeadline()}
+      {renderDailyPlanButton()}
       {renderControls()}
       {renderEventModal()}
+      {renderDailyPlanModal()}
       {loading ? renderLoading() : renderEvents()}
     </div>
   )

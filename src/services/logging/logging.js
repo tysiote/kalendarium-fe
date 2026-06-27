@@ -5,7 +5,7 @@ export const sendUserAction = (a, v, u) => {
       method: 'POST',
       body: JSON.stringify({ a, v: `${value}`, u }),
       headers: { 'content-type': 'application/json; charset=UTF-8' }
-    })
+    }).catch(() => {})
   } catch (e) {
     console.log(e)
   }

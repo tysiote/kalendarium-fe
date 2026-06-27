@@ -8,6 +8,10 @@ export const translations = {
       'en-150': 'With description',
       'sk-SK': 'S popisom'
     },
+    withHeaders: {
+      'en-150': 'With headers',
+      'sk-SK': 'S hlavičkami'
+    },
     backFromExport: {
       'en-150': 'Back to events',
       'sk-SK': 'Späť na udalosti'

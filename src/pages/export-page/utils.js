@@ -1,5 +1,6 @@
 import { getTagsFromEvent } from '../../components/event/utils'
 import { translate as _ } from '../../services/translations'
+import { getCookieValue, setCookieValue } from '../login-page/utils'
 
 export const formatExportDate = (value, technical = false, day = false, locale = 'sk-SK') => {
   const format = day ? { day: 'numeric', month: 'long' } : { hour: 'numeric', minute: '2-digit' }
@@ -57,34 +58,52 @@ const copyEvent = (event) => {
   }
 }
 
-const jsonExport = (events) => {
-  const result = events.map((evt) => copyEvent(evt))
+const jsonExport = (events, headers) => {
+  const result = {}
+  result.events = events.map((evt) => copyEvent(evt))
+
+  if (Object.keys(headers ?? {}).length) {
+    result.headers = { top: headers?.top, bottom: headers?.bottom }
+  }
+
   return JSON.stringify(result)
 }
 
-export const getJsonExportData = (events) => {
-  navigator.clipboard.writeText(jsonExport(events))
+export const getJsonExportData = (events, headers) => {
+  navigator.clipboard.writeText(jsonExport(events, headers))
 }
 
-export const technicalExport = (exporting_events, withContent, withDate) => {
+export const technicalExport = (exporting_events, withContent, withDate, withEditors, headers) => {
   let res = ''
+  if (headers) {
+    const topHeaders = headers.top.replaceAll('\n', '<br>')
+    res += `<div style="font-size: 12px; font-family: 'Courier New'">
+    <div style="text-align: center; font-size: 12px; font-weight: bold; margin-bottom: 10px;">${topHeaders}</div>
+    `
+  }
   exporting_events.forEach((evt) => {
-    res += technicalExportOne(evt, 79, withContent, withDate)
+    res += technicalExportOne(evt, 79, withContent, withDate, withEditors)
   })
+  if (headers) {
+    const bottomHeaders = headers.bottom.replaceAll('\n', '<br>')
+    res += `<div style="font-size: 10px; font-family: 'Courier New'">
+    <div style="text-align: center; font-size: 12px; font-style: italic; margin-bottom: 10px;">${bottomHeaders}</div>
+    `
+  }
   const winPrint = window.open(
     '',
     '',
     'left=0,top=0,width=1024,height=768,toolbar=0,scrollbars=1,status=0'
   )
   winPrint.document.write(
-    '<title>Print  Report</title><div style="font-size: 10px; font-family: \'Courier New\'">' +
+    '<title>Print  Report</title><div style="font-size: 12px; font-family: \'Courier New\'">' +
       res +
       '</div>'
   )
   winPrint.document.close()
 }
 
-const technicalExportOne = (e, limit, content, withDate) => {
+const technicalExportOne = (e, limit, content, withDate, withEditors) => {
   let res = ''
 
   if (withDate) {
@@ -114,15 +133,18 @@ const technicalExportOne = (e, limit, content, withDate) => {
     res += insertTechnicalBreakes(e.content, limit - 10)
   }
 
+  if (withEditors && e.editors && e.editors.length) {
+    res += '<br>' + insertTechnicalBreakes(e.editors, limit - 10)
+  }
+
   if (e.tags2?.length) {
     res +=
-      '<br>' +
+      '<br><br>' +
       insertTechnicalBreakes(
         getTagsFromEvent({ tags: e.tags2, withTranslations: true })
           .map((t) => t.variant)
           .join(', '),
-        limit - 10,
-        true
+        limit - 10
       )
   } else {
     res += '<br>'
@@ -217,3 +239,56 @@ export const getDefaultEventsTagsTranslations = () => ({
   video: formatExportTags('video'),
   live: formatExportTags('live')
 })
+
+export const createDefaultHeaders = () => {
+  const header1 = {
+    id: 'home',
+    label: 'Domáca redakcia',
+    top: 'mail: domred@tasr.sk, tel.: +421 2 59 21 04 58\ndispecing@tasr.sk\n------------------------------------------------------\ntechnická podpora: 0905/505 721\n------------------------------------------------------',
+    bottom:
+      'Prehľad kultúrnych udalostí vychádza v domácom a easy servise o 17.00 h\n\nInformácie o očakávaných udalostiach nájdete aj v aplikácii TASR Kalendárium na adrese kalendarium.tasr.sk.'
+  }
+
+  const header2 = {
+    id: 'sport',
+    label: 'Športová redakcia',
+    top: 'tel.: 02/59210545, 59210323\nmail: sport@tasr.sk\ntechnická podpora: 0905/505 721',
+    bottom:
+      'Informácie o očakávaných udalostiach nájdete aj v aplikácii TASR Kalendárium na adrese kalendarium.tasr.sk.'
+  }
+
+  const header3 = {
+    id: 'foreign',
+    label: 'Zahraničná redakcia',
+    top: 'Telefón 02/592 10 363\nE-mail: foreign@tasr.sk\nTechnická podpora: 0905/505 721',
+    bottom:
+      'Informácie o očakávaných udalostiach nájdete aj v aplikácii TASR Kalendárium na adrese kalendarium.tasr.sk.'
+  }
+
+  const header4 = {
+    id: 'economic',
+    label: 'Ekonomická redakcia',
+    top: 'mail: ekon@tasr.sk\ndispecing@tasr.sk\n------------------------------------------------------\ntechnická podpora: 0905/505 721\n------------------------------------------------------',
+    bottom:
+      'Informácie o očakávaných udalostiach nájdete aj v aplikácii TASR Kalendárium na adrese kalendarium.tasr.sk.'
+  }
+
+  const headers = JSON.stringify([header1, header2, header3, header4])
+  setCookieValue('headers', headers)
+
+  return headers
+}
+
+export const getCookieHeaders = () => {
+  const cookieHeaders = getCookieValue('headers')
+  const cookieHeadersVersion = getCookieValue('headersVersion')
+  const CURRENT_HEADERS_VERSION = '1'
+  let headers = JSON.parse(cookieHeaders || '[]')
+
+  if (!cookieHeaders || cookieHeadersVersion !== CURRENT_HEADERS_VERSION) {
+    setCookieValue('headersVersion', CURRENT_HEADERS_VERSION)
+    headers = JSON.parse(createDefaultHeaders())
+  }
+
+  return headers
+}
